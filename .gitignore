@@ -1,0 +1,11 @@
+# Installed dependencies and generated build output
+/node_modules/
+/dist/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Local operating-system and editor files
+.DS_Store
+*.swp

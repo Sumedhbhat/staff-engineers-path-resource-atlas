@@ -1,0 +1,2090 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Complete DuckDB resources table for The Staff Engineer's Path Resource Atlas.">
+  <title>All Resources — The Staff Engineer’s Path</title>
+  <style>
+    :root { --ink:#17201c; --muted:#66706a; --paper:#f5f1e8; --card:#fffdf8; --line:#d9d5ca; --forest:#1f4a38; --lime:#d9ee73; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:14px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    a { color:var(--forest); text-underline-offset:3px; }
+    header { padding:48px clamp(20px,5vw,72px) 38px; color:white; background:var(--forest); }
+    header a { color:var(--lime); }
+    .back { display:inline-block; margin-bottom:28px; font-size:13px; }
+    h1 { margin:0; max-width:900px; font-family:Georgia,serif; font-size:clamp(38px,6vw,72px); line-height:1; letter-spacing:-.035em; }
+    .intro { max-width:720px; margin:22px 0 0; color:#cfdbd4; font-size:17px; }
+    .stats { display:flex; flex-wrap:wrap; gap:12px 34px; margin-top:28px; color:#cfdbd4; }
+    .stats strong { color:var(--lime); font-size:20px; }
+    main { padding:32px clamp(14px,3vw,48px) 64px; }
+    .controls { display:grid; grid-template-columns:minmax(240px,2fr) repeat(3,minmax(160px,1fr)); gap:12px; margin-bottom:18px; }
+    label { display:flex; flex-direction:column; gap:6px; color:var(--muted); font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    input, select { width:100%; min-height:44px; padding:10px 12px; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:7px; font:14px inherit; }
+    input:focus, select:focus { outline:3px solid rgba(217,238,115,.8); border-color:var(--forest); }
+    .table-meta { display:flex; justify-content:space-between; gap:16px; margin:0 2px 10px; color:var(--muted); font-size:13px; }
+    .table-wrap { overflow:auto; max-height:72vh; background:var(--card); border:1px solid var(--line); border-radius:10px; box-shadow:0 10px 30px rgba(25,36,30,.06); }
+    table { width:100%; min-width:1380px; border-collapse:collapse; }
+    th { position:sticky; top:0; z-index:1; padding:12px 10px; color:white; background:var(--forest); border-right:1px solid rgba(255,255,255,.12); text-align:left; font-size:11px; letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; }
+    th button { width:100%; padding:0; color:inherit; background:none; border:0; cursor:pointer; font:inherit; letter-spacing:inherit; text-align:left; text-transform:inherit; }
+    th button::after { content:" ↕"; color:var(--lime); }
+    td { max-width:320px; padding:11px 10px; border-top:1px solid var(--line); vertical-align:top; }
+    tbody tr:hover { background:#f4f7e5; }
+    .number { text-align:right; font-variant-numeric:tabular-nums; }
+    .title { min-width:210px; font-weight:650; }
+    .url { font:12px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace; overflow-wrap:anywhere; }
+    .status { font-weight:750; }
+    .status-2xx, .status-3xx { color:#17613b; }
+    .status-4xx, .status-5xx { color:#a02f2f; }
+    .empty { padding:48px; text-align:center; color:var(--muted); }
+    footer { padding:0 clamp(20px,5vw,72px) 42px; color:var(--muted); }
+    @media (max-width:900px) { .controls { grid-template-columns:1fr 1fr; } }
+    @media (max-width:560px) { header { padding-top:30px; } .controls { grid-template-columns:1fr; } .table-meta { flex-direction:column; } }
+    @media print { header { color:var(--ink); background:white; } header a,.intro,.stats { color:var(--ink); } .controls,.back,footer { display:none; } main { padding:0; } .table-wrap { max-height:none; overflow:visible; border:0; box-shadow:none; } table { min-width:0; font-size:8px; } th { position:static; color:white; } td { max-width:none; padding:4px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="back" href="index.html">← Back to Resource Atlas</a>
+    <h1>Complete resources table</h1>
+    <p class="intro">Every row and column loaded into the local DuckDB <code>resources</code> table, presented as a searchable standalone HTML document.</p>
+    <div class="stats">
+      <span><strong>196</strong> rows</span>
+      <span><strong>10</strong> chapters</span>
+      <span><strong>8</strong> categories</span>
+      <span><strong>177</strong> checked links</span>
+      <span><strong>72</strong> redirects</span>
+    </div>
+  </header>
+  <main>
+    <section class="controls" aria-label="Table filters">
+      <label>Search all fields<input id="search" type="search" placeholder="Title, URL, chapter…" autocomplete="off"></label>
+      <label>Chapter<select id="chapter"><option value="">All chapters</option><option value="Introduction">Introduction</option><option value="Chapter 1: What Would You Say You Do Here?">Chapter 1: What Would You Say You Do Here?</option><option value="Chapter 2: Three Maps">Chapter 2: Three Maps</option><option value="Chapter 3: Creating the Big Picture">Chapter 3: Creating the Big Picture</option><option value="Chapter 4: Finite Time">Chapter 4: Finite Time</option><option value="Chapter 5: Leading Big Projects">Chapter 5: Leading Big Projects</option><option value="Chapter 6: Why Have We Stopped?">Chapter 6: Why Have We Stopped?</option><option value="Chapter 7: You’re a Role Model Now (Sorry)">Chapter 7: You’re a Role Model Now (Sorry)</option><option value="Chapter 8: Influence at Scale">Chapter 8: Influence at Scale</option><option value="Chapter 9: What’s Next?">Chapter 9: What’s Next?</option></select></label>
+      <label>Category<select id="category"><option value="">All categories</option><option value="Articles and blog posts">Articles and blog posts</option><option value="Books and book chapters">Books and book chapters</option><option value="Courses and exercises">Courses and exercises</option><option value="Newsletters and conferences">Newsletters and conferences</option><option value="Papers, RFCs, and reference documents">Papers, RFCs, and reference documents</option><option value="Social posts, comics, and other media">Social posts, comics, and other media</option><option value="Tools, communities, and websites">Tools, communities, and websites</option><option value="Videos, talks, and slide decks">Videos, talks, and slide decks</option></select></label>
+      <label>Link status<select id="status"><option value="">All statuses</option><option value="available">Available (200–399)</option><option value="unavailable">Unavailable (other)</option><option value="redirected">Redirected URL</option></select></label>
+    </section>
+    <div class="table-meta"><span id="result-count" aria-live="polite">Showing all 196 rows</span><span>Click a column heading to sort · Print to save as PDF</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th scope="col"><button type="button" data-column="0">Order</button></th><th scope="col"><button type="button" data-column="1">Chapter</button></th><th scope="col"><button type="button" data-column="2">Category</button></th><th scope="col"><button type="button" data-column="3">Title</button></th><th scope="col"><button type="button" data-column="4">Appearance</button></th><th scope="col"><button type="button" data-column="5">Original URL</button></th><th scope="col"><button type="button" data-column="6">Resolved URL</button></th><th scope="col"><button type="button" data-column="7">Status</button></th>
+        </tr></thead>
+        <tbody id="rows">
+      <tr>
+        <td class="number" data-value="0">0</td>
+        <td>Introduction</td>
+        <td>Tools, communities, and websites</td>
+        <td class="title">staffeng.com</td>
+        <td class="number" data-value="1">1</td>
+        <td class="url"><a href="https://staffeng.com" target="_blank" rel="noreferrer">https://staffeng.com</a></td>
+        <td class="url"><a href="https://staffeng.com/" target="_blank" rel="noreferrer">https://staffeng.com/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="1">1</td>
+        <td>Introduction</td>
+        <td>Books and book chapters</td>
+        <td class="title">Staff Engineer</td>
+        <td class="number" data-value="2">2</td>
+        <td class="url"><a href="https://staffeng.com/book" target="_blank" rel="noreferrer">https://staffeng.com/book</a></td>
+        <td class="url"><a href="https://staffeng.com/book/" target="_blank" rel="noreferrer">https://staffeng.com/book/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="2">2</td>
+        <td>Introduction</td>
+        <td>Newsletters and conferences</td>
+        <td class="title">StaffPlus conference</td>
+        <td class="number" data-value="3">3</td>
+        <td class="url"><a href="https://leaddev.com/events" target="_blank" rel="noreferrer">https://leaddev.com/events</a></td>
+        <td class="url"><a href="https://leaddev.com/events" target="_blank" rel="noreferrer">https://leaddev.com/events</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="3">3</td>
+        <td>Introduction</td>
+        <td>Articles and blog posts</td>
+        <td class="title">An Incomplete List of Skills Senior Engineers Need, Beyond Coding</td>
+        <td class="number" data-value="4">4</td>
+        <td class="url"><a href="https://skamille.medium.com/an-incomplete-list-of-skills-senior-engineers-need-beyond-coding-8ed4a521b29f" target="_blank" rel="noreferrer">https://skamille.medium.com/an-incomplete-list-of-skills-senior-engineers-need-beyond-coding-8ed4a521b29f</a></td>
+        <td class="url"><a href="https://skamille.medium.com/an-incomplete-list-of-skills-senior-engineers-need-beyond-coding-8ed4a521b29f" target="_blank" rel="noreferrer">https://skamille.medium.com/an-incomplete-list-of-skills-senior-engineers-need-beyond-coding-8ed4a521b29f</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="4">4</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">The Reality of Being a Principal Engineer</td>
+        <td class="number" data-value="1">1</td>
+        <td class="url"><a href="https://leaddev.com/career-paths-progression-promotion/reality-being-principal-engineer" target="_blank" rel="noreferrer">https://leaddev.com/career-paths-progression-promotion/reality-being-principal-engineer</a></td>
+        <td class="url"><a href="https://leaddev.com/career-development/reality-being-principal-engineer" target="_blank" rel="noreferrer">https://leaddev.com/career-development/reality-being-principal-engineer</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="5">5</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Tools, communities, and websites</td>
+        <td class="title">https://levels.fyi</td>
+        <td class="number" data-value="2">2</td>
+        <td class="url"><a href="https://levels.fyi" target="_blank" rel="noreferrer">https://levels.fyi</a></td>
+        <td class="url"><a href="https://www.levels.fyi/" target="_blank" rel="noreferrer">https://www.levels.fyi/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="6">6</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Tools, communities, and websites</td>
+        <td class="title">https://www.progression.fyi</td>
+        <td class="number" data-value="3">3</td>
+        <td class="url"><a href="https://www.progression.fyi" target="_blank" rel="noreferrer">https://www.progression.fyi</a></td>
+        <td class="url"><a href="https://progression.fyi/" target="_blank" rel="noreferrer">https://progression.fyi/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="7">7</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">Creating a Career Ladder for Engineers</td>
+        <td class="number" data-value="4">4</td>
+        <td class="url"><a href="https://www.youtube.com/watch?v=jA1Q94d2z10" target="_blank" rel="noreferrer">https://www.youtube.com/watch?v=jA1Q94d2z10</a></td>
+        <td class="url"><a href="https://www.youtube.com/watch?v=jA1Q94d2z10" target="_blank" rel="noreferrer">https://www.youtube.com/watch?v=jA1Q94d2z10</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="8">8</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Engineering Growth: Framework Overview</td>
+        <td class="number" data-value="5">5</td>
+        <td class="url"><a href="https://medium.com/s/engineering-growth-framework/engineering-growth-framework-overview-4e02ab330524" target="_blank" rel="noreferrer">https://medium.com/s/engineering-growth-framework/engineering-growth-framework-overview-4e02ab330524</a></td>
+        <td class="url"><a href="https://medium.com/s/engineering-growth-framework/engineering-growth-framework-overview-4e02ab330524" target="_blank" rel="noreferrer">https://medium.com/s/engineering-growth-framework/engineering-growth-framework-overview-4e02ab330524</a></td>
+        <td class="number status status-4xx" data-value="403">403</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="9">9</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Papers, RFCs, and reference documents</td>
+        <td class="title">The Effects of Employee Job Titles on Respect Granted by Customers</td>
+        <td class="number" data-value="6">6</td>
+        <td class="url"><a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3027028" target="_blank" rel="noreferrer">https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3027028</a></td>
+        <td class="url"><a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3027028" target="_blank" rel="noreferrer">https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3027028</a></td>
+        <td class="number status status-4xx" data-value="403">403</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="10">10</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">The 5 Biases Pushing Women Out of STEM</td>
+        <td class="number" data-value="7">7</td>
+        <td class="url"><a href="https://hbr.org/2015/03/the-5-biases-pushing-women-out-of-stem" target="_blank" rel="noreferrer">https://hbr.org/2015/03/the-5-biases-pushing-women-out-of-stem</a></td>
+        <td class="url"><a href="https://hbr.org/2015/03/the-5-biases-pushing-women-out-of-stem" target="_blank" rel="noreferrer">https://hbr.org/2015/03/the-5-biases-pushing-women-out-of-stem</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="11">11</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Papers, RFCs, and reference documents</td>
+        <td class="title">Science Faculty’s Subtle Gender Biases Favor Male Students</td>
+        <td class="number" data-value="8">8</td>
+        <td class="url"><a href="https://www.pnas.org/doi/full/10.1073/pnas.1211286109" target="_blank" rel="noreferrer">https://www.pnas.org/doi/full/10.1073/pnas.1211286109</a></td>
+        <td class="url"><a href="https://www.pnas.org/doi/full/10.1073/pnas.1211286109" target="_blank" rel="noreferrer">https://www.pnas.org/doi/full/10.1073/pnas.1211286109</a></td>
+        <td class="number status status-4xx" data-value="403">403</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="12">12</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Inverse Conway Maneuver</td>
+        <td class="number" data-value="9">9</td>
+        <td class="url"><a href="https://www.thoughtworks.com/radar/techniques/inverse-conway-maneuver" target="_blank" rel="noreferrer">https://www.thoughtworks.com/radar/techniques/inverse-conway-maneuver</a></td>
+        <td class="url"><a href="https://www.thoughtworks.com/radar/techniques/inverse-conway-maneuver" target="_blank" rel="noreferrer">https://www.thoughtworks.com/radar/techniques/inverse-conway-maneuver</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="13">13</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">List of Software Bugs</td>
+        <td class="number" data-value="10">10</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/List_of_software_bugs" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/List_of_software_bugs</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/List_of_software_bugs" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/List_of_software_bugs</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="14">14</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Boeing Promised Pilots a 737 Software Fix Last Year, but They’re Still Waiting</td>
+        <td class="number" data-value="11">11</td>
+        <td class="url"><a href="https://www.nytimes.com/2019/03/14/business/boeing-737-software-update.html" target="_blank" rel="noreferrer">https://www.nytimes.com/2019/03/14/business/boeing-737-software-update.html</a></td>
+        <td class="url"><a href="https://www.nytimes.com/2019/03/14/business/boeing-737-software-update.html" target="_blank" rel="noreferrer">https://www.nytimes.com/2019/03/14/business/boeing-737-software-update.html</a></td>
+        <td class="number status status-4xx" data-value="403">403</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="15">15</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Software Glitch Cripples Ambulance Service</td>
+        <td class="number" data-value="12">12</td>
+        <td class="url"><a href="https://www.wired.com/2009/10/1026london-ambulance-computer-meltdown/" target="_blank" rel="noreferrer">https://www.wired.com/2009/10/1026london-ambulance-computer-meltdown/</a></td>
+        <td class="url"><a href="https://www.wired.com/2009/10/1026london-ambulance-computer-meltdown/" target="_blank" rel="noreferrer">https://www.wired.com/2009/10/1026london-ambulance-computer-meltdown/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="16">16</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Papers, RFCs, and reference documents</td>
+        <td class="title">An Investigation of the Therac-25 Accident</td>
+        <td class="number" data-value="13">13</td>
+        <td class="url"><a href="https://web.stanford.edu/class/cs240/old/sp2014/readings/therac-25.pdf" target="_blank" rel="noreferrer">https://web.stanford.edu/class/cs240/old/sp2014/readings/therac-25.pdf</a></td>
+        <td class="url"><a href="https://web.stanford.edu/class/archive/cs/cs240/cs240.1236/old//sp2014/readings/therac-25.pdf" target="_blank" rel="noreferrer">https://web.stanford.edu/class/archive/cs/cs240/cs240.1236/old//sp2014/readings/therac-25.pdf</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="17">17</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">We Are Not Special</td>
+        <td class="number" data-value="14">14</td>
+        <td class="url"><a href="https://www.hillelwayne.com/post/we-are-not-special/" target="_blank" rel="noreferrer">https://www.hillelwayne.com/post/we-are-not-special/</a></td>
+        <td class="url"><a href="https://www.hillelwayne.com/post/we-are-not-special/" target="_blank" rel="noreferrer">https://www.hillelwayne.com/post/we-are-not-special/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="18">18</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Bastard Operator From Hell:</td>
+        <td class="number" data-value="15">15</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Bastard_Operator_From_Hell" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Bastard_Operator_From_Hell</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Bastard_Operator_From_Hell" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Bastard_Operator_From_Hell</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="19">19</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Tools, communities, and websites</td>
+        <td class="title">Kind Engineering: How to Engineer Kindness</td>
+        <td class="number" data-value="16">16</td>
+        <td class="url"><a href="https://kind.engineering" target="_blank" rel="noreferrer">https://kind.engineering</a></td>
+        <td class="url"><a href="https://kind.engineering/" target="_blank" rel="noreferrer">https://kind.engineering/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="20">20</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">So You&#39;re Staff+ ... Now What?</td>
+        <td class="number" data-value="17">17</td>
+        <td class="url"><a href="https://leaddev.com/leaddev-live/so-youre-staff-now-what" target="_blank" rel="noreferrer">https://leaddev.com/leaddev-live/so-youre-staff-now-what</a></td>
+        <td class="url"><a href="https://leaddev.com/events" target="_blank" rel="noreferrer">https://leaddev.com/events</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="21">21</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">When Your Manager Isn’t Supporting You, Build A Voltron</td>
+        <td class="number" data-value="18">18</td>
+        <td class="url"><a href="https://larahogan.me/blog/manager-voltron/" target="_blank" rel="noreferrer">https://larahogan.me/blog/manager-voltron/</a></td>
+        <td class="url"><a href="https://larahogan.me/blog/manager-voltron/" target="_blank" rel="noreferrer">https://larahogan.me/blog/manager-voltron/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="22">22</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Side quest</td>
+        <td class="number" data-value="19">19</td>
+        <td class="url"><a href="https://tvtropes.org/pmwiki/pmwiki.php/Main/Sidequest" target="_blank" rel="noreferrer">https://tvtropes.org/pmwiki/pmwiki.php/Main/Sidequest</a></td>
+        <td class="url"><a href="https://tvtropes.org/pmwiki/pmwiki.php/Main/Sidequest" target="_blank" rel="noreferrer">https://tvtropes.org/pmwiki/pmwiki.php/Main/Sidequest</a></td>
+        <td class="number status status-4xx" data-value="403">403</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="23">23</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">Role and Influence: The IC trajectory beyond Staff:</td>
+        <td class="number" data-value="20">20</td>
+        <td class="url"><a href="https://leaddev.com/leaddev-live/role-and-influence-ic-trajectory-beyond-staff" target="_blank" rel="noreferrer">https://leaddev.com/leaddev-live/role-and-influence-ic-trajectory-beyond-staff</a></td>
+        <td class="url"><a href="https://leaddev.com/events" target="_blank" rel="noreferrer">https://leaddev.com/events</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="24">24</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">The Trident Model of Career Development</td>
+        <td class="number" data-value="21">21</td>
+        <td class="url"><a href="https://www.thekua.com/atwork/2019/02/the-trident-model-of-career-development/" target="_blank" rel="noreferrer">https://www.thekua.com/atwork/2019/02/the-trident-model-of-career-development/</a></td>
+        <td class="url"><a href="https://www.patkua.com/blog/the-trident-model-of-career-development/" target="_blank" rel="noreferrer">https://www.patkua.com/blog/the-trident-model-of-career-development/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="25">25</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Being a Tech Lead-Manager is Hard</td>
+        <td class="number" data-value="22">22</td>
+        <td class="url"><a href="https://jimjh.medium.com/being-a-tech-lead-manager-is-hard-c7eed6367a63" target="_blank" rel="noreferrer">https://jimjh.medium.com/being-a-tech-lead-manager-is-hard-c7eed6367a63</a></td>
+        <td class="url"><a href="https://jimjh.medium.com/being-a-tech-lead-manager-is-hard-c7eed6367a63" target="_blank" rel="noreferrer">https://jimjh.medium.com/being-a-tech-lead-manager-is-hard-c7eed6367a63</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="26">26</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Tech Lead Management Roles are a Trap</td>
+        <td class="number" data-value="23">23</td>
+        <td class="url"><a href="https://lethain.com/tech-lead-managers/" target="_blank" rel="noreferrer">https://lethain.com/tech-lead-managers/</a></td>
+        <td class="url"><a href="https://lethain.com/tech-lead-managers/" target="_blank" rel="noreferrer">https://lethain.com/tech-lead-managers/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="27">27</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">The Lure of the Tech Lead Manager and Why You Should Avoid it</td>
+        <td class="number" data-value="24">24</td>
+        <td class="url"><a href="https://lucianohgo.com/posts/the-lure-of-the-tech-lead-manager-and-why-you-should-avoid-it" target="_blank" rel="noreferrer">https://lucianohgo.com/posts/the-lure-of-the-tech-lead-manager-and-why-you-should-avoid-it</a></td>
+        <td class="url"><a href="https://lucianohgo.com/posts/the-lure-of-the-tech-lead-manager-and-why-you-should-avoid-it" target="_blank" rel="noreferrer">https://lucianohgo.com/posts/the-lure-of-the-tech-lead-manager-and-why-you-should-avoid-it</a></td>
+        <td class="number status status-4xx" data-value="404">404</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="28">28</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">The Engineer/Manager Pendulum</td>
+        <td class="number" data-value="25">25</td>
+        <td class="url"><a href="https://charity.wtf/2017/05/11/the-engineer-manager-pendulum/" target="_blank" rel="noreferrer">https://charity.wtf/2017/05/11/the-engineer-manager-pendulum/</a></td>
+        <td class="url"><a href="https://charity.wtf/p/the-engineer-manager-pendulum" target="_blank" rel="noreferrer">https://charity.wtf/p/the-engineer-manager-pendulum</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="29">29</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Staff Archetypes</td>
+        <td class="number" data-value="26">26</td>
+        <td class="url"><a href="https://staffeng.com/guides/staff-archetypes" target="_blank" rel="noreferrer">https://staffeng.com/guides/staff-archetypes</a></td>
+        <td class="url"><a href="https://staffeng.com/guides/staff-archetypes/" target="_blank" rel="noreferrer">https://staffeng.com/guides/staff-archetypes/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="30">30</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Brooks’s Law</td>
+        <td class="number" data-value="27">27</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Brooks%27s_law" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Brooks%27s_law</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Brooks%27s_law" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Brooks%27s_law</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="31">31</td>
+        <td>Chapter 1: What Would You Say You Do Here?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Huge Customer Effort Keeps Flooded NYC Data Center Running</td>
+        <td class="number" data-value="28">28</td>
+        <td class="url"><a href="https://www.computerworld.com/article/2493111/huge-customer-effort-keeps-flooded-nyc-data-center-running.html" target="_blank" rel="noreferrer">https://www.computerworld.com/article/2493111/huge-customer-effort-keeps-flooded-nyc-data-center-running.html</a></td>
+        <td class="url"><a href="https://www.computerworld.com/article/2493111/huge-customer-effort-keeps-flooded-nyc-data-center-running.html" target="_blank" rel="noreferrer">https://www.computerworld.com/article/2493111/huge-customer-effort-keeps-flooded-nyc-data-center-running.html</a></td>
+        <td class="number status status-4xx" data-value="404">404</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="32">32</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Fog of War</td>
+        <td class="number" data-value="1">1</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Fog_of_war#In_video_games" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Fog_of_war#In_video_games</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Fog_of_war#In_video_games" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Fog_of_war#In_video_games</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="33">33</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Social posts, comics, and other media</td>
+        <td class="title">Average Familiarity</td>
+        <td class="number" data-value="2">2</td>
+        <td class="url"><a href="https://xkcd.com/2501/" target="_blank" rel="noreferrer">https://xkcd.com/2501/</a></td>
+        <td class="url"><a href="https://xkcd.com/2501/" target="_blank" rel="noreferrer">https://xkcd.com/2501/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="34">34</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">Pushing Through Friction</td>
+        <td class="number" data-value="3">3</td>
+        <td class="url"><a href="https://blog.danielna.com/talks/pushing-through-friction" target="_blank" rel="noreferrer">https://blog.danielna.com/talks/pushing-through-friction</a></td>
+        <td class="url"><a href="https://blog.danielna.com/talks/pushing-through-friction" target="_blank" rel="noreferrer">https://blog.danielna.com/talks/pushing-through-friction</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="35">35</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Papers, RFCs, and reference documents</td>
+        <td class="title">Principal Engineering Community Tenets</td>
+        <td class="number" data-value="4">4</td>
+        <td class="url"><a href="https://www.amazon.jobs/en/landing_pages/pe-community-tenets" target="_blank" rel="noreferrer">https://www.amazon.jobs/en/landing_pages/pe-community-tenets</a></td>
+        <td class="url"><a href="https://www.amazon.jobs/content/en/teams/principal-engineering/tenets" target="_blank" rel="noreferrer">https://www.amazon.jobs/content/en/teams/principal-engineering/tenets</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="36">36</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Social posts, comics, and other media</td>
+        <td class="title">Nines don’t matter if users aren’t happy</td>
+        <td class="number" data-value="5">5</td>
+        <td class="url"><a href="https://twitter.com/mipsytipsy/status/964209099171774464" target="_blank" rel="noreferrer">https://twitter.com/mipsytipsy/status/964209099171774464</a></td>
+        <td class="url"><a href="https://twitter.com/mipsytipsy/status/964209099171774464" target="_blank" rel="noreferrer">https://twitter.com/mipsytipsy/status/964209099171774464</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="37">37</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Service-Level Objective</td>
+        <td class="number" data-value="6">6</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Service-level_objective" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Service-level_objective</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Service-level_objective" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Service-level_objective</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="38">38</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">No User Left Behind: Making Sure Customers Reach Your Service</td>
+        <td class="number" data-value="7">7</td>
+        <td class="url"><a href="https://www.usenix.org/conference/lisa16/conference-program/presentation/suley" target="_blank" rel="noreferrer">https://www.usenix.org/conference/lisa16/conference-program/presentation/suley</a></td>
+        <td class="url"><a href="https://www.usenix.org/conference/lisa16/conference-program/presentation/suley" target="_blank" rel="noreferrer">https://www.usenix.org/conference/lisa16/conference-program/presentation/suley</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="39">39</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Newsletters and conferences</td>
+        <td class="title">Lead Dev, Staff Plus, and Leading Eng</td>
+        <td class="number" data-value="8">8</td>
+        <td class="url"><a href="https://leaddev.com/events" target="_blank" rel="noreferrer">https://leaddev.com/events</a></td>
+        <td class="url"><a href="https://leaddev.com/events" target="_blank" rel="noreferrer">https://leaddev.com/events</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="40">40</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Newsletters and conferences</td>
+        <td class="title">SRECon</td>
+        <td class="number" data-value="9">9</td>
+        <td class="url"><a href="https://www.usenix.org/srecon" target="_blank" rel="noreferrer">https://www.usenix.org/srecon</a></td>
+        <td class="url"><a href="https://www.usenix.org/conference/srecon" target="_blank" rel="noreferrer">https://www.usenix.org/conference/srecon</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="41">41</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Tools, communities, and websites</td>
+        <td class="title">Welcome to Rands Leadership Slack</td>
+        <td class="number" data-value="10">10</td>
+        <td class="url"><a href="https://randsinrepose.com/welcome-to-rands-leadership-slack/" target="_blank" rel="noreferrer">https://randsinrepose.com/welcome-to-rands-leadership-slack/</a></td>
+        <td class="url"><a href="https://randsinrepose.com/welcome-to-rands-leadership-slack/" target="_blank" rel="noreferrer">https://randsinrepose.com/welcome-to-rands-leadership-slack/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="42">42</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Newsletters and conferences</td>
+        <td class="title">The Software Architects’ Newsletter</td>
+        <td class="number" data-value="11">11</td>
+        <td class="url"><a href="https://www.infoq.com/software-architects-newsletter/" target="_blank" rel="noreferrer">https://www.infoq.com/software-architects-newsletter/</a></td>
+        <td class="url"><a href="https://www.infoq.com/software-architects-newsletter/" target="_blank" rel="noreferrer">https://www.infoq.com/software-architects-newsletter/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="43">43</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Announcing the VOID</td>
+        <td class="number" data-value="12">12</td>
+        <td class="url"><a href="https://www.verica.io/blog/announcing-the-void/" target="_blank" rel="noreferrer">https://www.verica.io/blog/announcing-the-void/</a></td>
+        <td class="url"><a href="https://www.verica.io/blog/announcing-the-void/" target="_blank" rel="noreferrer">https://www.verica.io/blog/announcing-the-void/</a></td>
+        <td class="number status status-0xx" data-value="0">0</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="44">44</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Newsletters and conferences</td>
+        <td class="title">SRE Weekly:</td>
+        <td class="number" data-value="13">13</td>
+        <td class="url"><a href="https://sreweekly.com" target="_blank" rel="noreferrer">https://sreweekly.com</a></td>
+        <td class="url"><a href="https://sreweekly.com/" target="_blank" rel="noreferrer">https://sreweekly.com/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="45">45</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Newsletters and conferences</td>
+        <td class="title">Raw Signal</td>
+        <td class="number" data-value="14">14</td>
+        <td class="url"><a href="https://www.rawsignal.ca/newsletter" target="_blank" rel="noreferrer">https://www.rawsignal.ca/newsletter</a></td>
+        <td class="url"><a href="https://www.rawsignal.ca/worlds-best-newsletter/" target="_blank" rel="noreferrer">https://www.rawsignal.ca/worlds-best-newsletter/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="46">46</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Papers, RFCs, and reference documents</td>
+        <td class="title">Technology Radar</td>
+        <td class="number" data-value="15">15</td>
+        <td class="url"><a href="https://www.thoughtworks.com/radar" target="_blank" rel="noreferrer">https://www.thoughtworks.com/radar</a></td>
+        <td class="url"><a href="https://www.thoughtworks.com/radar" target="_blank" rel="noreferrer">https://www.thoughtworks.com/radar</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="47">47</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Social posts, comics, and other media</td>
+        <td class="title">Map of Earth&#39;s principal tectonic plates</td>
+        <td class="number" data-value="16">16</td>
+        <td class="url"><a href="https://commons.wikimedia.org/w/index.php?curid=535201" target="_blank" rel="noreferrer">https://commons.wikimedia.org/w/index.php?curid=535201</a></td>
+        <td class="url"><a href="https://commons.wikimedia.org/w/index.php?curid=535201" target="_blank" rel="noreferrer">https://commons.wikimedia.org/w/index.php?curid=535201</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="48">48</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Myth of meritocracy</td>
+        <td class="number" data-value="17">17</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Myth_of_meritocracy" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Myth_of_meritocracy</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Myth_of_meritocracy" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Myth_of_meritocracy</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="49">49</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Tools, communities, and websites</td>
+        <td class="title">Is Tech A Meritocracy:</td>
+        <td class="number" data-value="18">18</td>
+        <td class="url"><a href="https://istechameritocracy.com" target="_blank" rel="noreferrer">https://istechameritocracy.com</a></td>
+        <td class="url"><a href="https://istechameritocracy.com/" target="_blank" rel="noreferrer">https://istechameritocracy.com/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="50">50</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Papers, RFCs, and reference documents</td>
+        <td class="title">A Typology of Organisational Cultures</td>
+        <td class="number" data-value="19">19</td>
+        <td class="url"><a href="https://www.researchgate.net/publication/8150380_A_Typology_of_Organisational_Cultures" target="_blank" rel="noreferrer">https://www.researchgate.net/publication/8150380_A_Typology_of_Organisational_Cultures</a></td>
+        <td class="url"><a href="https://www.researchgate.net/publication/8150380_A_Typology_of_Organisational_Cultures" target="_blank" rel="noreferrer">https://www.researchgate.net/publication/8150380_A_Typology_of_Organisational_Cultures</a></td>
+        <td class="number status status-4xx" data-value="403">403</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="51">51</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Articles and blog posts</td>
+        <td class="title">A User’s Guide To Getting Things Done in Government</td>
+        <td class="number" data-value="20">20</td>
+        <td class="url"><a href="https://www.govexec.com/management/2017/07/users-guide-getting-things-done-government/139558/" target="_blank" rel="noreferrer">https://www.govexec.com/management/2017/07/users-guide-getting-things-done-government/139558/</a></td>
+        <td class="url"><a href="https://www.govexec.com/management/2017/07/users-guide-getting-things-done-government/139558/" target="_blank" rel="noreferrer">https://www.govexec.com/management/2017/07/users-guide-getting-things-done-government/139558/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="52">52</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Articles and blog posts</td>
+        <td class="title">The Politics of Mapping</td>
+        <td class="number" data-value="21">21</td>
+        <td class="url"><a href="https://bloomsburygeographer.com/2020/10/19/the-politics-of-mapping/" target="_blank" rel="noreferrer">https://bloomsburygeographer.com/2020/10/19/the-politics-of-mapping/</a></td>
+        <td class="url"><a href="https://bloomsburygeographer.com/2020/10/19/the-politics-of-mapping/" target="_blank" rel="noreferrer">https://bloomsburygeographer.com/2020/10/19/the-politics-of-mapping/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="53">53</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Social posts, comics, and other media</td>
+        <td class="title">The Room Where It Happens</td>
+        <td class="number" data-value="22">22</td>
+        <td class="url"><a href="https://genius.com/Leslie-odom-jr-lin-manuel-miranda-daveed-diggs-okieriete-onaodowan-and-original-broadway-cast-of-hamilton-the-room-where-it-happens-lyrics" target="_blank" rel="noreferrer">https://genius.com/Leslie-odom-jr-lin-manuel-miranda-daveed-diggs-okieriete-onaodowan-and-original-broadway-cast-of-hamilton-the-room-where-it-happens-lyrics</a></td>
+        <td class="url"><a href="https://genius.com/Leslie-odom-jr-lin-manuel-miranda-daveed-diggs-okieriete-onaodowan-and-original-broadway-cast-of-hamilton-the-room-where-it-happens-lyrics" target="_blank" rel="noreferrer">https://genius.com/Leslie-odom-jr-lin-manuel-miranda-daveed-diggs-okieriete-onaodowan-and-original-broadway-cast-of-hamilton-the-room-where-it-happens-lyrics</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="54">54</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">Coordination Headwind: How Organizations are like Slime Molds</td>
+        <td class="number" data-value="23">23</td>
+        <td class="url"><a href="https://komoroske.com/slime-mold/" target="_blank" rel="noreferrer">https://komoroske.com/slime-mold/</a></td>
+        <td class="url"><a href="https://komoroske.com/slime-mold/" target="_blank" rel="noreferrer">https://komoroske.com/slime-mold/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="55">55</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Getting in the Room</td>
+        <td class="number" data-value="24">24</td>
+        <td class="url"><a href="https://lethain.com/getting-in-the-room/" target="_blank" rel="noreferrer">https://lethain.com/getting-in-the-room/</a></td>
+        <td class="url"><a href="https://lethain.com/getting-in-the-room/" target="_blank" rel="noreferrer">https://lethain.com/getting-in-the-room/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="56">56</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Manipulating Your Organization</td>
+        <td class="number" data-value="25">25</td>
+        <td class="url"><a href="https://book.debuggingteams.com#manipulating_your_organization" target="_blank" rel="noreferrer">https://book.debuggingteams.com#manipulating_your_organization</a></td>
+        <td class="url"><a href="https://book.debuggingteams.com/#manipulating_your_organization" target="_blank" rel="noreferrer">https://book.debuggingteams.com/#manipulating_your_organization</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="57">57</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Lead Manufacturing</td>
+        <td class="number" data-value="26">26</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Lean_manufacturing" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Lean_manufacturing</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Lean_manufacturing" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Lean_manufacturing</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="58">58</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Articles and blog posts</td>
+        <td class="title">DevOps culture: Westrum organizational culture</td>
+        <td class="number" data-value="27">27</td>
+        <td class="url"><a href="https://cloud.google.com/architecture/devops/devops-culture-westrum-organizational-culture" target="_blank" rel="noreferrer">https://cloud.google.com/architecture/devops/devops-culture-westrum-organizational-culture</a></td>
+        <td class="url"><a href="https://docs.cloud.google.com/architecture/devops" target="_blank" rel="noreferrer">https://docs.cloud.google.com/architecture/devops</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="59">59</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Tools, communities, and websites</td>
+        <td class="title">Civilization</td>
+        <td class="number" data-value="28">28</td>
+        <td class="url"><a href="https://civilization.com" target="_blank" rel="noreferrer">https://civilization.com</a></td>
+        <td class="url"><a href="https://civilization.2k.com/civ-vii/" target="_blank" rel="noreferrer">https://civilization.2k.com/civ-vii/</a></td>
+        <td class="number status status-4xx" data-value="404">404</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="60">60</td>
+        <td>Chapter 2: Three Maps</td>
+        <td>Social posts, comics, and other media</td>
+        <td class="title">Civilization II Technology Tree</td>
+        <td class="number" data-value="29">29</td>
+        <td class="url"><a href="https://www.civfanatics.com/civ2/downloads/reference/posters/" target="_blank" rel="noreferrer">https://www.civfanatics.com/civ2/downloads/reference/posters/</a></td>
+        <td class="url"><a href="https://civfanatics.com/civ2/downloads/reference/posters/" target="_blank" rel="noreferrer">https://civfanatics.com/civ2/downloads/reference/posters/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="61">61</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Tragedy of the Commons</td>
+        <td class="number" data-value="1">1</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Tragedy_of_the_commons" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Tragedy_of_the_commons</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Tragedy_of_the_commons" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Tragedy_of_the_commons</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="62">62</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Books and book chapters</td>
+        <td class="title">Fundamentals of Software Architecture</td>
+        <td class="number" data-value="2">2</td>
+        <td class="url"><a href="https://learning.oreilly.com/library/view/fundamentals-of-software/9781492043447/" target="_blank" rel="noreferrer">https://learning.oreilly.com/library/view/fundamentals-of-software/9781492043447/</a></td>
+        <td class="url"><a href="https://www.oreilly.com/library/view/fundamentals-of-software/9781492043447/" target="_blank" rel="noreferrer">https://www.oreilly.com/library/view/fundamentals-of-software/9781492043447/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="63">63</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Books and book chapters</td>
+        <td class="title">Writing the Good Vision</td>
+        <td class="number" data-value="3">3</td>
+        <td class="url"><a href="https://learning.oreilly.com/library/view/making-things-happen/9780596517717/ch04.html#the_value_of_writing_things_down" target="_blank" rel="noreferrer">https://learning.oreilly.com/library/view/making-things-happen/9780596517717/ch04.html#the_value_of_writing_things_down</a></td>
+        <td class="url"><a href="https://www.oreilly.com/library/view/making-things-happen/9780596517717/ch04.html" target="_blank" rel="noreferrer">https://www.oreilly.com/library/view/making-things-happen/9780596517717/ch04.html</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="64">64</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Articles and blog posts</td>
+        <td class="title">How to Set the Technical Direction for Your Team</td>
+        <td class="number" data-value="4">4</td>
+        <td class="url"><a href="http://jlhood.com/how-to-set-team-technical-direction/" target="_blank" rel="noreferrer">http://jlhood.com/how-to-set-team-technical-direction/</a></td>
+        <td class="url"><a href="https://jlhood.com/how-to-set-team-technical-direction/" target="_blank" rel="noreferrer">https://jlhood.com/how-to-set-team-technical-direction/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="65">65</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Writing our 3-Year Technical Vision</td>
+        <td class="number" data-value="5">5</td>
+        <td class="url"><a href="https://www.eventbrite.com/engineering/writing-our-3-year-technical-vision/" target="_blank" rel="noreferrer">https://www.eventbrite.com/engineering/writing-our-3-year-technical-vision/</a></td>
+        <td class="url"><a href="https://www.eventbrite.com/engineering/writing-our-3-year-technical-vision/" target="_blank" rel="noreferrer">https://www.eventbrite.com/engineering/writing-our-3-year-technical-vision/</a></td>
+        <td class="number status status-4xx" data-value="404">404</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="66">66</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Books and book chapters</td>
+        <td class="title">Good Strategy/Bad Strategy</td>
+        <td class="number" data-value="6">6</td>
+        <td class="url"><a href="https://bookshop.org/books/good-strategy-bad-strategy-the-difference-and-why-it-matters/9780307886231" target="_blank" rel="noreferrer">https://bookshop.org/books/good-strategy-bad-strategy-the-difference-and-why-it-matters/9780307886231</a></td>
+        <td class="url"><a href="https://bookshop.org/p/books/good-strategy-bad-strategy-the-difference-and-why-it-matters-richard-rumelt/09cdeb07305de935?ean=9780307886231" target="_blank" rel="noreferrer">https://bookshop.org/p/books/good-strategy-bad-strategy-the-difference-and-why-it-matters-richard-rumelt/09cdeb07305de935?ean=9780307886231</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="67">67</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">Technical Strategy Power Chords</td>
+        <td class="number" data-value="7">7</td>
+        <td class="url"><a href="https://leaddev.com/leaddev-live/technical-strategy-power-chords" target="_blank" rel="noreferrer">https://leaddev.com/leaddev-live/technical-strategy-power-chords</a></td>
+        <td class="url"><a href="https://leaddev.com/events" target="_blank" rel="noreferrer">https://leaddev.com/events</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="68">68</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">Getting to Commitment: Tackling broad technical problems in large organizations</td>
+        <td class="number" data-value="8">8</td>
+        <td class="url"><a href="https://leaddev.com/staffplus-new-york/video/getting-commitment-tackling-broad-technical-problems-large-organizations" target="_blank" rel="noreferrer">https://leaddev.com/staffplus-new-york/video/getting-commitment-tackling-broad-technical-problems-large-organizations</a></td>
+        <td class="url"><a href="https://leaddev.com/technical-direction/getting-commitment-tackling-broad-technical-problems-large-organizations" target="_blank" rel="noreferrer">https://leaddev.com/technical-direction/getting-commitment-tackling-broad-technical-problems-large-organizations</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="69">69</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Articles and blog posts</td>
+        <td class="title">A survey of engineering strategies</td>
+        <td class="number" data-value="9">9</td>
+        <td class="url"><a href="https://lethain.com/survey-of-engineering-strategies/" target="_blank" rel="noreferrer">https://lethain.com/survey-of-engineering-strategies/</a></td>
+        <td class="url"><a href="https://lethain.com/survey-of-engineering-strategies/" target="_blank" rel="noreferrer">https://lethain.com/survey-of-engineering-strategies/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="70">70</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Books and book chapters</td>
+        <td class="title">Technology Strategy Patterns</td>
+        <td class="number" data-value="10">10</td>
+        <td class="url"><a href="https://learning.oreilly.com/library/view/technology-strategy-patterns/9781492040866/" target="_blank" rel="noreferrer">https://learning.oreilly.com/library/view/technology-strategy-patterns/9781492040866/</a></td>
+        <td class="url"><a href="https://www.oreilly.com/library/view/technology-strategy-patterns/9781492040866/" target="_blank" rel="noreferrer">https://www.oreilly.com/library/view/technology-strategy-patterns/9781492040866/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="71">71</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Tools, communities, and websites</td>
+        <td class="title">Welcome to Rands Leadership Slack</td>
+        <td class="number" data-value="11">11</td>
+        <td class="url"><a href="https://randsinrepose.com/welcome-to-rands-leadership-slack/" target="_blank" rel="noreferrer">https://randsinrepose.com/welcome-to-rands-leadership-slack/</a></td>
+        <td class="url"><a href="https://randsinrepose.com/welcome-to-rands-leadership-slack/" target="_blank" rel="noreferrer">https://randsinrepose.com/welcome-to-rands-leadership-slack/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="72">72</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Tools, communities, and websites</td>
+        <td class="title">Build Your Own Radar</td>
+        <td class="number" data-value="12">12</td>
+        <td class="url"><a href="https://www.thoughtworks.com/radar/byor" target="_blank" rel="noreferrer">https://www.thoughtworks.com/radar/byor</a></td>
+        <td class="url"><a href="https://www.thoughtworks.com/en-gb/radar/byor" target="_blank" rel="noreferrer">https://www.thoughtworks.com/en-gb/radar/byor</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="73">73</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Social posts, comics, and other media</td>
+        <td class="title">“writing about engineering strategy is hard because good strategy is pretty boring”</td>
+        <td class="number" data-value="13">13</td>
+        <td class="url"><a href="https://twitter.com/skamille/status/1328763503973429250" target="_blank" rel="noreferrer">https://twitter.com/skamille/status/1328763503973429250</a></td>
+        <td class="url"><a href="https://twitter.com/skamille/status/1328763503973429250" target="_blank" rel="noreferrer">https://twitter.com/skamille/status/1328763503973429250</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="74">74</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Guides / Writing Engineering Strategy</td>
+        <td class="number" data-value="14">14</td>
+        <td class="url"><a href="https://staffeng.com/guides/engineering-strategy" target="_blank" rel="noreferrer">https://staffeng.com/guides/engineering-strategy</a></td>
+        <td class="url"><a href="https://staffeng.com/guides/engineering-strategy/" target="_blank" rel="noreferrer">https://staffeng.com/guides/engineering-strategy/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="75">75</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Articles and blog posts</td>
+        <td class="title">To Lead, You Have to Follow</td>
+        <td class="number" data-value="15">15</td>
+        <td class="url"><a href="https://lethain.com/to-lead-follow/" target="_blank" rel="noreferrer">https://lethain.com/to-lead-follow/</a></td>
+        <td class="url"><a href="https://lethain.com/to-lead-follow/" target="_blank" rel="noreferrer">https://lethain.com/to-lead-follow/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="76">76</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Primus Inter Pares</td>
+        <td class="number" data-value="16">16</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Primus_inter_pares" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Primus_inter_pares</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Primus_inter_pares" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Primus_inter_pares</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="77">77</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Books and book chapters</td>
+        <td class="title">Architecture Characteristics Defined</td>
+        <td class="number" data-value="17">17</td>
+        <td class="url"><a href="https://learning.oreilly.com/library/view/fundamentals-of-software/9781492043447/ch04.html" target="_blank" rel="noreferrer">https://learning.oreilly.com/library/view/fundamentals-of-software/9781492043447/ch04.html</a></td>
+        <td class="url"><a href="https://www.oreilly.com/library/view/fundamentals-of-software/9781492043447/ch04.html" target="_blank" rel="noreferrer">https://www.oreilly.com/library/view/fundamentals-of-software/9781492043447/ch04.html</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="78">78</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Technical Decision Making</td>
+        <td class="number" data-value="18">18</td>
+        <td class="url"><a href="https://copyconstruct.medium.com/technical-decision-making-9b2817c18da4" target="_blank" rel="noreferrer">https://copyconstruct.medium.com/technical-decision-making-9b2817c18da4</a></td>
+        <td class="url"><a href="https://copyconstruct.medium.com/technical-decision-making-9b2817c18da4" target="_blank" rel="noreferrer">https://copyconstruct.medium.com/technical-decision-making-9b2817c18da4</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="79">79</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Papers, RFCs, and reference documents</td>
+        <td class="title">Manifesto for Agile Software Development</td>
+        <td class="number" data-value="19">19</td>
+        <td class="url"><a href="https://agilemanifesto.org" target="_blank" rel="noreferrer">https://agilemanifesto.org</a></td>
+        <td class="url"><a href="https://agilemanifesto.org/" target="_blank" rel="noreferrer">https://agilemanifesto.org/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="80">80</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Papers, RFCs, and reference documents</td>
+        <td class="title">On Consensus and Humming in the IETF</td>
+        <td class="number" data-value="20">20</td>
+        <td class="url"><a href="https://datatracker.ietf.org/doc/html/rfc7282" target="_blank" rel="noreferrer">https://datatracker.ietf.org/doc/html/rfc7282</a></td>
+        <td class="url"><a href="https://datatracker.ietf.org/doc/html/rfc7282" target="_blank" rel="noreferrer">https://datatracker.ietf.org/doc/html/rfc7282</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="81">81</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Books and book chapters</td>
+        <td class="title">“in a few cases it was agreed that moving forward was more important than one person’s argument carrying the day, so we made decisions by flipping a coin”</td>
+        <td class="number" data-value="21">21</td>
+        <td class="url"><a href="https://learning.oreilly.com/library/view/learning-http-2/9781491962435/foreword01.html" target="_blank" rel="noreferrer">https://learning.oreilly.com/library/view/learning-http-2/9781491962435/foreword01.html</a></td>
+        <td class="url"><a href="https://www.oreilly.com/library/view/learning-http-2/9781491962435/foreword01.html" target="_blank" rel="noreferrer">https://www.oreilly.com/library/view/learning-http-2/9781491962435/foreword01.html</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="82">82</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Tools, communities, and websites</td>
+        <td class="title">The Decider</td>
+        <td class="number" data-value="22">22</td>
+        <td class="url"><a href="https://thedecider.app" target="_blank" rel="noreferrer">https://thedecider.app</a></td>
+        <td class="url"><a href="https://thedecider.app/" target="_blank" rel="noreferrer">https://thedecider.app/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="83">83</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Overton Window</td>
+        <td class="number" data-value="23">23</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Overton_window:" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Overton_window:</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Overton_window" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Overton_window</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="84">84</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Articles and blog posts</td>
+        <td class="title">The Long Con And The Overton Window</td>
+        <td class="number" data-value="24">24</td>
+        <td class="url"><a href="https://torontoguardian.com/2019/05/long-con-overton-window/" target="_blank" rel="noreferrer">https://torontoguardian.com/2019/05/long-con-overton-window/</a></td>
+        <td class="url"><a href="https://torontoguardian.com/2019/05/long-con-overton-window/" target="_blank" rel="noreferrer">https://torontoguardian.com/2019/05/long-con-overton-window/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="85">85</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Nemawashi</td>
+        <td class="number" data-value="25">25</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Nemawashi" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Nemawashi</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Nemawashi" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Nemawashi</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="86">86</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Nemawashi – Toyota Production System Guide</td>
+        <td class="number" data-value="26">26</td>
+        <td class="url"><a href="https://mag.toyota.co.uk/nemawashi-toyota-production-system/" target="_blank" rel="noreferrer">https://mag.toyota.co.uk/nemawashi-toyota-production-system/</a></td>
+        <td class="url"><a href="https://mag.toyota.co.uk/nemawashi-toyota-production-system/" target="_blank" rel="noreferrer">https://mag.toyota.co.uk/nemawashi-toyota-production-system/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="87">87</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Getting Big Changes Implemented at the Staff+ Level:</td>
+        <td class="number" data-value="27">27</td>
+        <td class="url"><a href="https://leaddev.com/process/getting-big-changes-implemented-staff-level" target="_blank" rel="noreferrer">https://leaddev.com/process/getting-big-changes-implemented-staff-level</a></td>
+        <td class="url"><a href="https://leaddev.com/communication/getting-big-changes-implemented-staff-level" target="_blank" rel="noreferrer">https://leaddev.com/communication/getting-big-changes-implemented-staff-level</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="88">88</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Making the Case for Cloud Only</td>
+        <td class="number" data-value="28">28</td>
+        <td class="url"><a href="https://medium.com/ft-product-technology/making-the-case-for-cloud-only-92f382ff8dd9" target="_blank" rel="noreferrer">https://medium.com/ft-product-technology/making-the-case-for-cloud-only-92f382ff8dd9</a></td>
+        <td class="url"><a href="https://medium.com/ft-product-technology/making-the-case-for-cloud-only-92f382ff8dd9" target="_blank" rel="noreferrer">https://medium.com/ft-product-technology/making-the-case-for-cloud-only-92f382ff8dd9</a></td>
+        <td class="number status status-4xx" data-value="403">403</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="89">89</td>
+        <td>Chapter 3: Creating the Big Picture</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">Landing projects successfully</td>
+        <td class="number" data-value="29">29</td>
+        <td class="url"><a href="https://leaddev.com/agile-other-ways-working/landing-projects-successfully" target="_blank" rel="noreferrer">https://leaddev.com/agile-other-ways-working/landing-projects-successfully</a></td>
+        <td class="url"><a href="https://leaddev.com/velocity/landing-projects-successfully" target="_blank" rel="noreferrer">https://leaddev.com/velocity/landing-projects-successfully</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="90">90</td>
+        <td>Chapter 4: Finite Time</td>
+        <td>Tools, communities, and websites</td>
+        <td class="title">The Sims</td>
+        <td class="number" data-value="1">1</td>
+        <td class="url"><a href="https://www.ea.com/games/the-sims" target="_blank" rel="noreferrer">https://www.ea.com/games/the-sims</a></td>
+        <td class="url"><a href="https://www.ea.com/games/the-sims" target="_blank" rel="noreferrer">https://www.ea.com/games/the-sims</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="91">91</td>
+        <td>Chapter 4: Finite Time</td>
+        <td>Social posts, comics, and other media</td>
+        <td class="title">What phrases make you assume someone doesn’t know what they’re talking about?</td>
+        <td class="number" data-value="2">2</td>
+        <td class="url"><a href="https://twitter.com/whereistanya/status/1472282631303835653" target="_blank" rel="noreferrer">https://twitter.com/whereistanya/status/1472282631303835653</a></td>
+        <td class="url"><a href="https://twitter.com/whereistanya/status/1472282631303835653" target="_blank" rel="noreferrer">https://twitter.com/whereistanya/status/1472282631303835653</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="92">92</td>
+        <td>Chapter 4: Finite Time</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Impact for the Impatient</td>
+        <td class="number" data-value="3">3</td>
+        <td class="url"><a href="https://softwareexorcist.com/writing/impact-impatient" target="_blank" rel="noreferrer">https://softwareexorcist.com/writing/impact-impatient</a></td>
+        <td class="url"><a href="https://softwareexorcist.com/writing/impact-impatient" target="_blank" rel="noreferrer">https://softwareexorcist.com/writing/impact-impatient</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="93">93</td>
+        <td>Chapter 4: Finite Time</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Jane Jacobs</td>
+        <td class="number" data-value="4">4</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Jane_Jacobs" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Jane_Jacobs</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Jane_Jacobs" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Jane_Jacobs</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="94">94</td>
+        <td>Chapter 4: Finite Time</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Pierre Bourdieu</td>
+        <td class="number" data-value="5">5</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Pierre_Bourdieu" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Pierre_Bourdieu</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Pierre_Bourdieu" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Pierre_Bourdieu</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="95">95</td>
+        <td>Chapter 4: Finite Time</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Bin packing problem</td>
+        <td class="number" data-value="6">6</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Bin_packing_problem" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Bin_packing_problem</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Bin_packing_problem" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Bin_packing_problem</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="96">96</td>
+        <td>Chapter 4: Finite Time</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Ron Swanson</td>
+        <td class="number" data-value="7">7</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Ron_Swanson" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Ron_Swanson</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Ron_Swanson" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Ron_Swanson</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="97">97</td>
+        <td>Chapter 4: Finite Time</td>
+        <td>Articles and blog posts</td>
+        <td class="title">The first rule of prioritization: no snacking</td>
+        <td class="number" data-value="8">8</td>
+        <td class="url"><a href="https://www.intercom.com/blog/first-rule-prioritization-no-snacking" target="_blank" rel="noreferrer">https://www.intercom.com/blog/first-rule-prioritization-no-snacking</a></td>
+        <td class="url"><a href="https://www.intercom.com/blog/first-rule-prioritization-no-snacking/" target="_blank" rel="noreferrer">https://www.intercom.com/blog/first-rule-prioritization-no-snacking/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="98">98</td>
+        <td>Chapter 4: Finite Time</td>
+        <td>Articles and blog posts</td>
+        <td class="title">OPP (Other People’s Problems)</td>
+        <td class="number" data-value="9">9</td>
+        <td class="url"><a href="https://skamille.medium.com/opp-other-peoples-problems-d7eb174724ee" target="_blank" rel="noreferrer">https://skamille.medium.com/opp-other-peoples-problems-d7eb174724ee</a></td>
+        <td class="url"><a href="https://skamille.medium.com/opp-other-peoples-problems-d7eb174724ee" target="_blank" rel="noreferrer">https://skamille.medium.com/opp-other-peoples-problems-d7eb174724ee</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="99">99</td>
+        <td>Chapter 4: Finite Time</td>
+        <td>Articles and blog posts</td>
+        <td class="title">The Myths and Traps of &quot;Managing Up&quot;</td>
+        <td class="number" data-value="10">10</td>
+        <td class="url"><a href="https://leaddev.com/communication-relationships/myths-and-traps-managing" target="_blank" rel="noreferrer">https://leaddev.com/communication-relationships/myths-and-traps-managing</a></td>
+        <td class="url"><a href="https://leaddev.com/communication/myths-and-traps-managing" target="_blank" rel="noreferrer">https://leaddev.com/communication/myths-and-traps-managing</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="100">100</td>
+        <td>Chapter 4: Finite Time</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Observational learning:</td>
+        <td class="number" data-value="11">11</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Observational_learning:" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Observational_learning:</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Observational_learning" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Observational_learning</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="101">101</td>
+        <td>Chapter 4: Finite Time</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">The New Manager Death Spiral</td>
+        <td class="number" data-value="12">12</td>
+        <td class="url"><a href="https://www.youtube.com/watch?v=pAbU3WJ-NBw" target="_blank" rel="noreferrer">https://www.youtube.com/watch?v=pAbU3WJ-NBw</a></td>
+        <td class="url"><a href="https://www.youtube.com/watch?v=pAbU3WJ-NBw" target="_blank" rel="noreferrer">https://www.youtube.com/watch?v=pAbU3WJ-NBw</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="102">102</td>
+        <td>Chapter 4: Finite Time</td>
+        <td>Articles and blog posts</td>
+        <td class="title">10 ways to politely say &#39;NO&#39;</td>
+        <td class="number" data-value="13">13</td>
+        <td class="url"><a href="https://www.indiatoday.in/education-today/grammar-vocabulary/story/10-ways-to-politely-say-no-1505465-2019-04-19" target="_blank" rel="noreferrer">https://www.indiatoday.in/education-today/grammar-vocabulary/story/10-ways-to-politely-say-no-1505465-2019-04-19</a></td>
+        <td class="url"><a href="https://www.indiatoday.in/education-today/grammar-vocabulary/story/10-ways-to-politely-say-no-1505465-2019-04-19" target="_blank" rel="noreferrer">https://www.indiatoday.in/education-today/grammar-vocabulary/story/10-ways-to-politely-say-no-1505465-2019-04-19</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="103">103</td>
+        <td>Chapter 4: Finite Time</td>
+        <td>Articles and blog posts</td>
+        <td class="title">How to Say No to a Work Request</td>
+        <td class="number" data-value="14">14</td>
+        <td class="url"><a href="https://www.askamanager.org/2015/04/how-to-say-no-to-a-work-request.html" target="_blank" rel="noreferrer">https://www.askamanager.org/2015/04/how-to-say-no-to-a-work-request.html</a></td>
+        <td class="url"><a href="https://www.askamanager.org/2015/04/how-to-say-no-to-a-work-request.html" target="_blank" rel="noreferrer">https://www.askamanager.org/2015/04/how-to-say-no-to-a-work-request.html</a></td>
+        <td class="number status status-4xx" data-value="403">403</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="104">104</td>
+        <td>Chapter 4: Finite Time</td>
+        <td>Social posts, comics, and other media</td>
+        <td class="title">Being strategic about accepting requests for your time and tracking when you say no</td>
+        <td class="number" data-value="15">15</td>
+        <td class="url"><a href="https://twitter.com/amyngyn/status/1290142692622495744" target="_blank" rel="noreferrer">https://twitter.com/amyngyn/status/1290142692622495744</a></td>
+        <td class="url"><a href="https://twitter.com/amyngyn/status/1290142692622495744" target="_blank" rel="noreferrer">https://twitter.com/amyngyn/status/1290142692622495744</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="105">105</td>
+        <td>Chapter 4: Finite Time</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Work on What Matters</td>
+        <td class="number" data-value="16">16</td>
+        <td class="url"><a href="https://lethain.com/work-on-what-matters/" target="_blank" rel="noreferrer">https://lethain.com/work-on-what-matters/</a></td>
+        <td class="url"><a href="https://lethain.com/work-on-what-matters/" target="_blank" rel="noreferrer">https://lethain.com/work-on-what-matters/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="106">106</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Social posts, comics, and other media</td>
+        <td class="title">“That feeling of discomfort is called ‘learning’”</td>
+        <td class="number" data-value="1">1</td>
+        <td class="url"><a href="https://twitter.com/whereistanya/status/1383107066148032512" target="_blank" rel="noreferrer">https://twitter.com/whereistanya/status/1383107066148032512</a></td>
+        <td class="url"><a href="https://twitter.com/whereistanya/status/1383107066148032512" target="_blank" rel="noreferrer">https://twitter.com/whereistanya/status/1383107066148032512</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="107">107</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Working with Product Managers: Advice from PMs</td>
+        <td class="number" data-value="2">2</td>
+        <td class="url"><a href="https://newsletter.pragmaticengineer.com/p/working-with-product-managers-advice-from-pms" target="_blank" rel="noreferrer">https://newsletter.pragmaticengineer.com/p/working-with-product-managers-advice-from-pms</a></td>
+        <td class="url"><a href="https://newsletter.pragmaticengineer.com/p/working-with-product-managers-advice-from-pms" target="_blank" rel="noreferrer">https://newsletter.pragmaticengineer.com/p/working-with-product-managers-advice-from-pms</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="108">108</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Product requirements document</td>
+        <td class="number" data-value="3">3</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Product_requirements_document" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Product_requirements_document</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Product_requirements_document" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Product_requirements_document</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="109">109</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">The Challenges of Migrating 150+ Microservices to Kubernetes</td>
+        <td class="number" data-value="4">4</td>
+        <td class="url"><a href="https://www.youtube.com/watch?v=H06qrNmGqyE" target="_blank" rel="noreferrer">https://www.youtube.com/watch?v=H06qrNmGqyE</a></td>
+        <td class="url"><a href="https://www.youtube.com/watch?v=H06qrNmGqyE" target="_blank" rel="noreferrer">https://www.youtube.com/watch?v=H06qrNmGqyE</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="110">110</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Responsibility Assignment Matrix:</td>
+        <td class="number" data-value="5">5</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Responsibility_assignment_matrix:" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Responsibility_assignment_matrix:</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Responsibility_assignment_matrix" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Responsibility_assignment_matrix</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="111">111</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Team Leader Venn Diagram</td>
+        <td class="number" data-value="6">6</td>
+        <td class="url"><a href="https://larahogan.me/blog/team-leader-venn-diagram/" target="_blank" rel="noreferrer">https://larahogan.me/blog/team-leader-venn-diagram/</a></td>
+        <td class="url"><a href="https://larahogan.me/blog/team-leader-venn-diagram/" target="_blank" rel="noreferrer">https://larahogan.me/blog/team-leader-venn-diagram/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="112">112</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">Sustaining and Growing Motivation Across Projects</td>
+        <td class="number" data-value="7">7</td>
+        <td class="url"><a href="https://leaddev.com/agile-other-ways-working/sustaining-and-growing-motivation-across-projects" target="_blank" rel="noreferrer">https://leaddev.com/agile-other-ways-working/sustaining-and-growing-motivation-across-projects</a></td>
+        <td class="url"><a href="https://leaddev.com/velocity/sustaining-and-growing-motivation-across-projects" target="_blank" rel="noreferrer">https://leaddev.com/velocity/sustaining-and-growing-motivation-across-projects</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="113">113</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Project Management Triangle:</td>
+        <td class="number" data-value="8">8</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Project_management_triangle" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Project_management_triangle</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Project_management_triangle" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Project_management_triangle</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="114">114</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Books and book chapters</td>
+        <td class="title">Estimating</td>
+        <td class="number" data-value="9">9</td>
+        <td class="url"><a href="https://learning.oreilly.com/library/view/the-pragmatic-programmer/9780135956977/f_0033.xhtml#learn_to_estimate" target="_blank" rel="noreferrer">https://learning.oreilly.com/library/view/the-pragmatic-programmer/9780135956977/f_0033.xhtml#learn_to_estimate</a></td>
+        <td class="url"><a href="https://www.oreilly.com/library/view/the-pragmatic-programmer/9780135956977/f_0033.xhtml" target="_blank" rel="noreferrer">https://www.oreilly.com/library/view/the-pragmatic-programmer/9780135956977/f_0033.xhtml</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="115">115</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">Avoid the Lake</td>
+        <td class="number" data-value="10">10</td>
+        <td class="url"><a href="https://leaddev.com/agile-other-ways-working/avoid-lake" target="_blank" rel="noreferrer">https://leaddev.com/agile-other-ways-working/avoid-lake</a></td>
+        <td class="url"><a href="https://leaddev.com/velocity/avoid-lake" target="_blank" rel="noreferrer">https://leaddev.com/velocity/avoid-lake</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="116">116</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Books and book chapters</td>
+        <td class="title">The Art of Travel</td>
+        <td class="number" data-value="11">11</td>
+        <td class="url"><a href="https://www.alaindebotton.com/travel/" target="_blank" rel="noreferrer">https://www.alaindebotton.com/travel/</a></td>
+        <td class="url"><a href="https://www.alaindebotton.com/travel/" target="_blank" rel="noreferrer">https://www.alaindebotton.com/travel/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="117">117</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Ubiquitous Language</td>
+        <td class="number" data-value="12">12</td>
+        <td class="url"><a href="https://martinfowler.com/bliki/UbiquitousLanguage.html" target="_blank" rel="noreferrer">https://martinfowler.com/bliki/UbiquitousLanguage.html</a></td>
+        <td class="url"><a href="https://martinfowler.com/bliki/UbiquitousLanguage.html" target="_blank" rel="noreferrer">https://martinfowler.com/bliki/UbiquitousLanguage.html</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="118">118</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Social posts, comics, and other media</td>
+        <td class="title">“a written design or an API one-pager may feel like it costs a lot to write, but it is a very cheap iteration”</td>
+        <td class="number" data-value="13">13</td>
+        <td class="url"><a href="https://twitter.com/systemician/status/1498689480412254208" target="_blank" rel="noreferrer">https://twitter.com/systemician/status/1498689480412254208</a></td>
+        <td class="url"><a href="https://twitter.com/systemician/status/1498689480412254208" target="_blank" rel="noreferrer">https://twitter.com/systemician/status/1498689480412254208</a></td>
+        <td class="number status status-4xx" data-value="404">404</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="119">119</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Articles and blog posts</td>
+        <td class="title">The Power of “Yes, if”: Iterating on our RFC Process:</td>
+        <td class="number" data-value="14">14</td>
+        <td class="url"><a href="https://engineering.squarespace.com/blog/2019/the-power-of-yes-if:" target="_blank" rel="noreferrer">https://engineering.squarespace.com/blog/2019/the-power-of-yes-if:</a></td>
+        <td class="url"><a href="https://engineering.squarespace.com/blog/2019/the-power-of-yes-if:" target="_blank" rel="noreferrer">https://engineering.squarespace.com/blog/2019/the-power-of-yes-if:</a></td>
+        <td class="number status status-4xx" data-value="404">404</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="120">120</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Books and book chapters</td>
+        <td class="title">The Checklist Manifesto: How to Get Things Right</td>
+        <td class="number" data-value="15">15</td>
+        <td class="url"><a href="http://atulgawande.com/book/the-checklist-manifesto/" target="_blank" rel="noreferrer">http://atulgawande.com/book/the-checklist-manifesto/</a></td>
+        <td class="url"><a href="http://atulgawande.com/book/the-checklist-manifesto/" target="_blank" rel="noreferrer">http://atulgawande.com/book/the-checklist-manifesto/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="121">121</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Articles and blog posts</td>
+        <td class="title">What I Think About When I Edit</td>
+        <td class="number" data-value="16">16</td>
+        <td class="url"><a href="https://evaparish.com/blog/how-i-edit" target="_blank" rel="noreferrer">https://evaparish.com/blog/how-i-edit</a></td>
+        <td class="url"><a href="https://evaparish.com/blog/how-i-edit" target="_blank" rel="noreferrer">https://evaparish.com/blog/how-i-edit</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="122">122</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Social posts, comics, and other media</td>
+        <td class="title">“If you can insert &quot;by zombies&quot; after the verb, you have passive voice</td>
+        <td class="number" data-value="17">17</td>
+        <td class="url"><a href="https://twitter.com/johnsonr/status/259012668298506240" target="_blank" rel="noreferrer">https://twitter.com/johnsonr/status/259012668298506240</a></td>
+        <td class="url"><a href="https://twitter.com/johnsonr/status/259012668298506240" target="_blank" rel="noreferrer">https://twitter.com/johnsonr/status/259012668298506240</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="123">123</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Courses and exercises</td>
+        <td class="title">Overview of technical writing courses</td>
+        <td class="number" data-value="18">18</td>
+        <td class="url"><a href="https://developers.google.com/tech-writing/overview" target="_blank" rel="noreferrer">https://developers.google.com/tech-writing/overview</a></td>
+        <td class="url"><a href="https://developers.google.com/tech-writing/overview" target="_blank" rel="noreferrer">https://developers.google.com/tech-writing/overview</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="124">124</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Tools, communities, and websites</td>
+        <td class="title">Write the Docs</td>
+        <td class="number" data-value="19">19</td>
+        <td class="url"><a href="https://www.writethedocs.org/index.html" target="_blank" rel="noreferrer">https://www.writethedocs.org/index.html</a></td>
+        <td class="url"><a href="https://www.writethedocs.org/index.html" target="_blank" rel="noreferrer">https://www.writethedocs.org/index.html</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="125">125</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Articles and blog posts</td>
+        <td class="title">C. Northcote Parkinson:</td>
+        <td class="number" data-value="20">20</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/C._Northcote_Parkinson:" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/C._Northcote_Parkinson:</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/C._Northcote_Parkinson" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/C._Northcote_Parkinson</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="126">126</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Should Staff+ Engineers Be Writing Code?</td>
+        <td class="number" data-value="21">21</td>
+        <td class="url"><a href="https://jkebertz.medium.com/should-staff-engineers-be-writing-code-1237abf891f4" target="_blank" rel="noreferrer">https://jkebertz.medium.com/should-staff-engineers-be-writing-code-1237abf891f4</a></td>
+        <td class="url"><a href="https://jkebertz.medium.com/should-staff-engineers-be-writing-code-1237abf891f4" target="_blank" rel="noreferrer">https://jkebertz.medium.com/should-staff-engineers-be-writing-code-1237abf891f4</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="127">127</td>
+        <td>Chapter 5: Leading Big Projects</td>
+        <td>Books and book chapters</td>
+        <td class="title">99 Bottles of OOP</td>
+        <td class="number" data-value="22">22</td>
+        <td class="url"><a href="https://sandimetz.com/99bottles" target="_blank" rel="noreferrer">https://sandimetz.com/99bottles</a></td>
+        <td class="url"><a href="https://sandimetz.com/99bottles" target="_blank" rel="noreferrer">https://sandimetz.com/99bottles</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="128">128</td>
+        <td>Chapter 6: Why Have We Stopped?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Guides / Work on what matters</td>
+        <td class="number" data-value="1">1</td>
+        <td class="url"><a href="https://staffeng.com/guides/work-on-what-matters" target="_blank" rel="noreferrer">https://staffeng.com/guides/work-on-what-matters</a></td>
+        <td class="url"><a href="https://staffeng.com/guides/work-on-what-matters/" target="_blank" rel="noreferrer">https://staffeng.com/guides/work-on-what-matters/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="129">129</td>
+        <td>Chapter 6: Why Have We Stopped?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Lightweight Architecture Decision Records</td>
+        <td class="number" data-value="2">2</td>
+        <td class="url"><a href="https://www.thoughtworks.com/de-de/radar/techniques/lightweight-architecture-decision-records" target="_blank" rel="noreferrer">https://www.thoughtworks.com/de-de/radar/techniques/lightweight-architecture-decision-records</a></td>
+        <td class="url"><a href="https://www.thoughtworks.com/en-es/radar/techniques/lightweight-architecture-decision-records" target="_blank" rel="noreferrer">https://www.thoughtworks.com/en-es/radar/techniques/lightweight-architecture-decision-records</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="130">130</td>
+        <td>Chapter 6: Why Have We Stopped?</td>
+        <td>Books and book chapters</td>
+        <td class="title">Debugging Teams</td>
+        <td class="number" data-value="3">3</td>
+        <td class="url"><a href="https://www.debuggingteams.com" target="_blank" rel="noreferrer">https://www.debuggingteams.com</a></td>
+        <td class="url"><a href="https://debuggingteams.com/" target="_blank" rel="noreferrer">https://debuggingteams.com/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="131">131</td>
+        <td>Chapter 6: Why Have We Stopped?</td>
+        <td>Social posts, comics, and other media</td>
+        <td class="title">“the art of the rollup”</td>
+        <td class="number" data-value="4">4</td>
+        <td class="url"><a href="https://twitter.com/deniseyu21/status/1357832805653356546" target="_blank" rel="noreferrer">https://twitter.com/deniseyu21/status/1357832805653356546</a></td>
+        <td class="url"><a href="https://twitter.com/deniseyu21/status/1357832805653356546" target="_blank" rel="noreferrer">https://twitter.com/deniseyu21/status/1357832805653356546</a></td>
+        <td class="number status status-4xx" data-value="404">404</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="132">132</td>
+        <td>Chapter 6: Why Have We Stopped?</td>
+        <td>Papers, RFCs, and reference documents</td>
+        <td class="title">State the Problem Before Describing the Solution</td>
+        <td class="number" data-value="5">5</td>
+        <td class="url"><a href="http://lamport.azurewebsites.net/pubs/state-the-problem.pdf" target="_blank" rel="noreferrer">http://lamport.azurewebsites.net/pubs/state-the-problem.pdf</a></td>
+        <td class="url"><a href="https://lamport.azurewebsites.net/pubs/state-the-problem.pdf" target="_blank" rel="noreferrer">https://lamport.azurewebsites.net/pubs/state-the-problem.pdf</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="133">133</td>
+        <td>Chapter 6: Why Have We Stopped?</td>
+        <td>Papers, RFCs, and reference documents</td>
+        <td class="title">Definition of Done:</td>
+        <td class="number" data-value="6">6</td>
+        <td class="url"><a href="https://www.agilealliance.org/glossary/definition-of-done" target="_blank" rel="noreferrer">https://www.agilealliance.org/glossary/definition-of-done</a></td>
+        <td class="url"><a href="https://agilealliance.org/glossary/definition-of-done/" target="_blank" rel="noreferrer">https://agilealliance.org/glossary/definition-of-done/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="134">134</td>
+        <td>Chapter 6: Why Have We Stopped?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Coaching Drills and Exercises</td>
+        <td class="number" data-value="7">7</td>
+        <td class="url"><a href="https://xp123.com/articles/coaching-drills-and-exercises/" target="_blank" rel="noreferrer">https://xp123.com/articles/coaching-drills-and-exercises/</a></td>
+        <td class="url"><a href="https://xp123.com/coaching-drills-and-exercises/" target="_blank" rel="noreferrer">https://xp123.com/coaching-drills-and-exercises/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="135">135</td>
+        <td>Chapter 6: Why Have We Stopped?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Eating Your Own Dog Food:</td>
+        <td class="number" data-value="8">8</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Eating_your_own_dog_food:" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Eating_your_own_dog_food:</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Eating_your_own_dog_food" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Eating_your_own_dog_food</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="136">136</td>
+        <td>Chapter 6: Why Have We Stopped?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">The Hitchhiker’s Guide to the Galaxy:</td>
+        <td class="number" data-value="9">9</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/The_Hitchhiker%27s_Guide_to_the_Galaxy_(novel)" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/The_Hitchhiker%27s_Guide_to_the_Galaxy_(novel)</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/The_Hitchhiker%27s_Guide_to_the_Galaxy_(novel)" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/The_Hitchhiker%27s_Guide_to_the_Galaxy_(novel)</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="137">137</td>
+        <td>Chapter 6: Why Have We Stopped?</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">Why Marketing Matters</td>
+        <td class="number" data-value="10">10</td>
+        <td class="url"><a href="https://www.youtube.com/watch?v=hykHdV0So6M" target="_blank" rel="noreferrer">https://www.youtube.com/watch?v=hykHdV0So6M</a></td>
+        <td class="url"><a href="https://www.youtube.com/watch?v=hykHdV0So6M" target="_blank" rel="noreferrer">https://www.youtube.com/watch?v=hykHdV0So6M</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="138">138</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Papers, RFCs, and reference documents</td>
+        <td class="title">ACSE Guidelines for Engineering Grades:</td>
+        <td class="number" data-value="1">1</td>
+        <td class="url"><a href="https://www.asce.org/career-growth/early-career-engineers/asce-guidelines-for-engineering-grades" target="_blank" rel="noreferrer">https://www.asce.org/career-growth/early-career-engineers/asce-guidelines-for-engineering-grades</a></td>
+        <td class="url"><a href="https://www.asce.org/career-growth/early-career-engineers/asce-guidelines-for-engineering-grades" target="_blank" rel="noreferrer">https://www.asce.org/career-growth/early-career-engineers/asce-guidelines-for-engineering-grades</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="139">139</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Engineering Management: The Pendulum or the Ladder</td>
+        <td class="number" data-value="2">2</td>
+        <td class="url"><a href="https://charity.wtf/2019/01/04/engineering-management-the-pendulum-or-the-ladder/" target="_blank" rel="noreferrer">https://charity.wtf/2019/01/04/engineering-management-the-pendulum-or-the-ladder/</a></td>
+        <td class="url"><a href="https://charity.wtf/p/engineering-management-the-pendulum-or-the-ladder" target="_blank" rel="noreferrer">https://charity.wtf/p/engineering-management-the-pendulum-or-the-ladder</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="140">140</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Implicit Stereotype:</td>
+        <td class="number" data-value="3">3</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Implicit_stereotype:" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Implicit_stereotype:</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Implicit_stereotype" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Implicit_stereotype</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="141">141</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Social posts, comics, and other media</td>
+        <td class="title">Regular Expressions</td>
+        <td class="number" data-value="4">4</td>
+        <td class="url"><a href="https://xkcd.com/208/" target="_blank" rel="noreferrer">https://xkcd.com/208/</a></td>
+        <td class="url"><a href="https://xkcd.com/208/" target="_blank" rel="noreferrer">https://xkcd.com/208/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="142">142</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Tools, communities, and websites</td>
+        <td class="title">Explain It Like I’m Five</td>
+        <td class="number" data-value="5">5</td>
+        <td class="url"><a href="https://www.reddit.com/r/explainlikeimfive/" target="_blank" rel="noreferrer">https://www.reddit.com/r/explainlikeimfive/</a></td>
+        <td class="url"><a href="https://www.reddit.com/r/explainlikeimfive/" target="_blank" rel="noreferrer">https://www.reddit.com/r/explainlikeimfive/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="143">143</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Articles and blog posts</td>
+        <td class="title">On Being A Senior Engineer</td>
+        <td class="number" data-value="6">6</td>
+        <td class="url"><a href="https://www.kitchensoap.com/2012/10/25/on-being-a-senior-engineer/" target="_blank" rel="noreferrer">https://www.kitchensoap.com/2012/10/25/on-being-a-senior-engineer/</a></td>
+        <td class="url"><a href="https://www.kitchensoap.com/2012/10/25/on-being-a-senior-engineer/" target="_blank" rel="noreferrer">https://www.kitchensoap.com/2012/10/25/on-being-a-senior-engineer/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="144">144</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Don’t Ask Forgiveness, Radiate Intent</td>
+        <td class="number" data-value="7">7</td>
+        <td class="url"><a href="https://medium.com/@ElizAyer/dont-ask-forgiveness-radiate-intent-d36fd22393a3" target="_blank" rel="noreferrer">https://medium.com/@ElizAyer/dont-ask-forgiveness-radiate-intent-d36fd22393a3</a></td>
+        <td class="url"><a href="https://medium.com/@ElizAyer/dont-ask-forgiveness-radiate-intent-d36fd22393a3" target="_blank" rel="noreferrer">https://medium.com/@ElizAyer/dont-ask-forgiveness-radiate-intent-d36fd22393a3</a></td>
+        <td class="number status status-4xx" data-value="403">403</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="145">145</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Being Glue</td>
+        <td class="number" data-value="8">8</td>
+        <td class="url"><a href="https://noidea.dog/glue" target="_blank" rel="noreferrer">https://noidea.dog/glue</a></td>
+        <td class="url"><a href="https://www.noidea.dog/glue" target="_blank" rel="noreferrer">https://www.noidea.dog/glue</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="146">146</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Embrace Your Inner Incident Commander</td>
+        <td class="number" data-value="9">9</td>
+        <td class="url"><a href="https://increment.com/reliability/technical-incident-command/" target="_blank" rel="noreferrer">https://increment.com/reliability/technical-incident-command/</a></td>
+        <td class="url"><a href="https://increment.com/reliability/technical-incident-command/" target="_blank" rel="noreferrer">https://increment.com/reliability/technical-incident-command/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="147">147</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Bastard Operator From Hell:</td>
+        <td class="number" data-value="10">10</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Bastard_Operator_From_Hell" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Bastard_Operator_From_Hell</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Bastard_Operator_From_Hell" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Bastard_Operator_From_Hell</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="148">148</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Papers, RFCs, and reference documents</td>
+        <td class="title">Social Rules</td>
+        <td class="number" data-value="11">11</td>
+        <td class="url"><a href="https://www.recurse.com/social-rules" target="_blank" rel="noreferrer">https://www.recurse.com/social-rules</a></td>
+        <td class="url"><a href="https://www.recurse.com/social-rules" target="_blank" rel="noreferrer">https://www.recurse.com/social-rules</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="149">149</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Choose Boring Technology</td>
+        <td class="number" data-value="12">12</td>
+        <td class="url"><a href="https://boringtechnology.club" target="_blank" rel="noreferrer">https://boringtechnology.club</a></td>
+        <td class="url"><a href="https://boringtechnology.club/" target="_blank" rel="noreferrer">https://boringtechnology.club/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="150">150</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Books and book chapters</td>
+        <td class="title">Software Engineering at Google</td>
+        <td class="number" data-value="13">13</td>
+        <td class="url"><a href="https://abseil.io/resources/swe-book" target="_blank" rel="noreferrer">https://abseil.io/resources/swe-book</a></td>
+        <td class="url"><a href="https://abseil.io/resources/swe-book" target="_blank" rel="noreferrer">https://abseil.io/resources/swe-book</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="151">151</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Ship of Theseus:</td>
+        <td class="number" data-value="14">14</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Ship_of_Theseus:" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Ship_of_Theseus:</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Ship_of_Theseus" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Ship_of_Theseus</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="152">152</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Spooky Action at a Distance, How an AWS Outage Ate Our Load Balancer</td>
+        <td class="number" data-value="15">15</td>
+        <td class="url"><a href="https://www.hostedgraphite.com/blog/spooky-action-at-a-distance-how-an-aws-outage-ate-our-load-balancer" target="_blank" rel="noreferrer">https://www.hostedgraphite.com/blog/spooky-action-at-a-distance-how-an-aws-outage-ate-our-load-balancer</a></td>
+        <td class="url"><a href="https://www.hostedgraphite.com/blog/spooky-action-at-a-distance-how-an-aws-outage-ate-our-load-balancer" target="_blank" rel="noreferrer">https://www.hostedgraphite.com/blog/spooky-action-at-a-distance-how-an-aws-outage-ate-our-load-balancer</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="153">153</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Fallacies of Distributed Computing</td>
+        <td class="number" data-value="16">16</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Fallacies_of_distributed_computing" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Fallacies_of_distributed_computing</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Fallacies_of_distributed_computing" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Fallacies_of_distributed_computing</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="154">154</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Long-term Nuclear Waste Warning Messages:</td>
+        <td class="number" data-value="17">17</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Long-term_nuclear_waste_warning_messages:" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Long-term_nuclear_waste_warning_messages:</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Long-term_nuclear_waste_warning_messages" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Long-term_nuclear_waste_warning_messages</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="155">155</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Chaos engineering</td>
+        <td class="number" data-value="18">18</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Chaos_engineering" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Chaos_engineering</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Chaos_engineering" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Chaos_engineering</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="156">156</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Books and book chapters</td>
+        <td class="title">Refactoring: Improving the Design of Existing Code</td>
+        <td class="number" data-value="19">19</td>
+        <td class="url"><a href="https://learning.oreilly.com/library/view/refactoring-improving-the/9780134757681/" target="_blank" rel="noreferrer">https://learning.oreilly.com/library/view/refactoring-improving-the/9780134757681/</a></td>
+        <td class="url"><a href="https://www.oreilly.com/library/view/refactoring-improving-the/9780134757681/" target="_blank" rel="noreferrer">https://www.oreilly.com/library/view/refactoring-improving-the/9780134757681/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="157">157</td>
+        <td>Chapter 7: You’re a Role Model Now (Sorry)</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Getting Credit for Invisible Work at the Staff+ Level:</td>
+        <td class="number" data-value="20">20</td>
+        <td class="url"><a href="https://leaddev.com/staffplus/getting-credit-invisible-work-staff-level" target="_blank" rel="noreferrer">https://leaddev.com/staffplus/getting-credit-invisible-work-staff-level</a></td>
+        <td class="url"><a href="https://leaddev.com/hiring/getting-credit-invisible-work-staff-level" target="_blank" rel="noreferrer">https://leaddev.com/hiring/getting-credit-invisible-work-staff-level</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="158">158</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">Building a Better Bridge</td>
+        <td class="number" data-value="1">1</td>
+        <td class="url"><a href="https://leaddev.com/staffplus-new-york/video/building-better-bridge" target="_blank" rel="noreferrer">https://leaddev.com/staffplus-new-york/video/building-better-bridge</a></td>
+        <td class="url"><a href="https://leaddev.com/career-development/building-better-bridge" target="_blank" rel="noreferrer">https://leaddev.com/career-development/building-better-bridge</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="159">159</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Mentor, Coach, Sponsor: a Guide to Developing Engineers</td>
+        <td class="number" data-value="2">2</td>
+        <td class="url"><a href="https://leaddev.com/mentoring-coaching-feedback/mentor-coach-sponsor-guide-developing-engineers" target="_blank" rel="noreferrer">https://leaddev.com/mentoring-coaching-feedback/mentor-coach-sponsor-guide-developing-engineers</a></td>
+        <td class="url"><a href="https://leaddev.com/communication/mentor-coach-sponsor-guide-developing-engineers" target="_blank" rel="noreferrer">https://leaddev.com/communication/mentor-coach-sponsor-guide-developing-engineers</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="160">160</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Books and book chapters</td>
+        <td class="title">Resilient Management</td>
+        <td class="number" data-value="3">3</td>
+        <td class="url"><a href="https://resilient-management.com" target="_blank" rel="noreferrer">https://resilient-management.com</a></td>
+        <td class="url"><a href="https://resilient-management.com/" target="_blank" rel="noreferrer">https://resilient-management.com/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="161">161</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Rubber Duck Debugging</td>
+        <td class="number" data-value="4">4</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Rubber_duck_debugging" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Rubber_duck_debugging</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Rubber_duck_debugging" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Rubber_duck_debugging</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="162">162</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Implicit Stereotype:</td>
+        <td class="number" data-value="5">5</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Implicit_stereotype:" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Implicit_stereotype:</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Implicit_stereotype" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Implicit_stereotype</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="163">163</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Papers, RFCs, and reference documents</td>
+        <td class="title">Providing Feedback</td>
+        <td class="number" data-value="6">6</td>
+        <td class="url"><a href="https://projectinclude.org/providing_feedback" target="_blank" rel="noreferrer">https://projectinclude.org/providing_feedback</a></td>
+        <td class="url"><a href="https://projectinclude.org/providing_feedback" target="_blank" rel="noreferrer">https://projectinclude.org/providing_feedback</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="164">164</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Introducing &quot;Testing on the Toilet&quot;</td>
+        <td class="number" data-value="7">7</td>
+        <td class="url"><a href="https://testing.googleblog.com/2007/01/introducing-testing-on-toilet.html" target="_blank" rel="noreferrer">https://testing.googleblog.com/2007/01/introducing-testing-on-toilet.html</a></td>
+        <td class="url"><a href="https://testing.googleblog.com/2007/01/introducing-testing-on-toilet.html" target="_blank" rel="noreferrer">https://testing.googleblog.com/2007/01/introducing-testing-on-toilet.html</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="165">165</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Creating a Code Review Culture, Part 2: Code Reviewers</td>
+        <td class="number" data-value="8">8</td>
+        <td class="url"><a href="https://engineering.squarespace.com/blog/2019/code-review-culture-part-2" target="_blank" rel="noreferrer">https://engineering.squarespace.com/blog/2019/code-review-culture-part-2</a></td>
+        <td class="url"><a href="https://engineering.squarespace.com/blog/2019/code-review-culture-part-2" target="_blank" rel="noreferrer">https://engineering.squarespace.com/blog/2019/code-review-culture-part-2</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="166">166</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Articles and blog posts</td>
+        <td class="title">How Do Good Leaders Give Advice? The Short Answer: They Don’t</td>
+        <td class="number" data-value="9">9</td>
+        <td class="url"><a href="https://ideas.ted.com/how-do-good-leaders-give-advice-the-short-answer-they-dont/" target="_blank" rel="noreferrer">https://ideas.ted.com/how-do-good-leaders-give-advice-the-short-answer-they-dont/</a></td>
+        <td class="url"><a href="https://ideas.ted.com/how-do-good-leaders-give-advice-the-short-answer-they-dont/" target="_blank" rel="noreferrer">https://ideas.ted.com/how-do-good-leaders-give-advice-the-short-answer-they-dont/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="167">167</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Courses and exercises</td>
+        <td class="title">Kotlin Koans</td>
+        <td class="number" data-value="10">10</td>
+        <td class="url"><a href="https://play.kotlinlang.org/koans/overview" target="_blank" rel="noreferrer">https://play.kotlinlang.org/koans/overview</a></td>
+        <td class="url"><a href="https://play.kotlinlang.org/koans/overview" target="_blank" rel="noreferrer">https://play.kotlinlang.org/koans/overview</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="168">168</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Courses and exercises</td>
+        <td class="title">Codelabs</td>
+        <td class="number" data-value="11">11</td>
+        <td class="url"><a href="https://codelabs.developers.google.com/" target="_blank" rel="noreferrer">https://codelabs.developers.google.com/</a></td>
+        <td class="url"><a href="https://codelabs.developers.google.com/" target="_blank" rel="noreferrer">https://codelabs.developers.google.com/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="169">169</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Delegation is an Art not a Science</td>
+        <td class="number" data-value="12">12</td>
+        <td class="url"><a href="https://larahogan.me/blog/delegation-is-an-art/" target="_blank" rel="noreferrer">https://larahogan.me/blog/delegation-is-an-art/</a></td>
+        <td class="url"><a href="https://larahogan.me/blog/delegation-is-an-art/" target="_blank" rel="noreferrer">https://larahogan.me/blog/delegation-is-an-art/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="170">170</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Papers, RFCs, and reference documents</td>
+        <td class="title">Google Style Guides</td>
+        <td class="number" data-value="13">13</td>
+        <td class="url"><a href="https://google.github.io/styleguide/" target="_blank" rel="noreferrer">https://google.github.io/styleguide/</a></td>
+        <td class="url"><a href="https://google.github.io/styleguide/" target="_blank" rel="noreferrer">https://google.github.io/styleguide/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="171">171</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Papers, RFCs, and reference documents</td>
+        <td class="title">Thoughtworks Technology Radar</td>
+        <td class="number" data-value="14">14</td>
+        <td class="url"><a href="https://www.thoughtworks.com/en-us/radar" target="_blank" rel="noreferrer">https://www.thoughtworks.com/en-us/radar</a></td>
+        <td class="url"><a href="https://www.thoughtworks.com/radar" target="_blank" rel="noreferrer">https://www.thoughtworks.com/radar</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="172">172</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">Help Protect Your Data Centers with Safety Constraints</td>
+        <td class="number" data-value="15">15</td>
+        <td class="url"><a href="https://www.usenix.org/conference/srecon18americas/presentation/schulman" target="_blank" rel="noreferrer">https://www.usenix.org/conference/srecon18americas/presentation/schulman</a></td>
+        <td class="url"><a href="https://www.usenix.org/conference/srecon18americas/presentation/schulman" target="_blank" rel="noreferrer">https://www.usenix.org/conference/srecon18americas/presentation/schulman</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="173">173</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Delegate Messy and Unscoped Projects</td>
+        <td class="number" data-value="16">16</td>
+        <td class="url"><a href="https://larahogan.me/blog/manager-energy-drain/#delegate-messy-and-unscoped-projects" target="_blank" rel="noreferrer">https://larahogan.me/blog/manager-energy-drain/#delegate-messy-and-unscoped-projects</a></td>
+        <td class="url"><a href="https://larahogan.me/blog/manager-energy-drain/#delegate-messy-and-unscoped-projects" target="_blank" rel="noreferrer">https://larahogan.me/blog/manager-energy-drain/#delegate-messy-and-unscoped-projects</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="174">174</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Articles and blog posts</td>
+        <td class="title">‘Give Away Your Legos’ and Other Commandments for Scaling Startups</td>
+        <td class="number" data-value="17">17</td>
+        <td class="url"><a href="https://review.firstround.com/give-away-your-legos-and-other-commandments-for-scaling-startups" target="_blank" rel="noreferrer">https://review.firstround.com/give-away-your-legos-and-other-commandments-for-scaling-startups</a></td>
+        <td class="url"><a href="https://review.firstround.com/give-away-your-legos-and-other-commandments-for-scaling-startups/" target="_blank" rel="noreferrer">https://review.firstround.com/give-away-your-legos-and-other-commandments-for-scaling-startups/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="175">175</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Don’t Just Mentor Women and People of Color. Sponsor Them</td>
+        <td class="number" data-value="18">18</td>
+        <td class="url"><a href="https://hbr.org/2021/06/dont-just-mentor-women-and-people-of-color-sponsor-them" target="_blank" rel="noreferrer">https://hbr.org/2021/06/dont-just-mentor-women-and-people-of-color-sponsor-them</a></td>
+        <td class="url"><a href="https://hbr.org/2021/06/dont-just-mentor-women-and-people-of-color-sponsor-them" target="_blank" rel="noreferrer">https://hbr.org/2021/06/dont-just-mentor-women-and-people-of-color-sponsor-them</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="176">176</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Kapor Center for Social Impact Responds to Twitter’s Diversity Numbers</td>
+        <td class="number" data-value="19">19</td>
+        <td class="url"><a href="https://www.kaporcenter.org/press-release-posts/kapor-center-for-social-impact-responds-to-twitters-diversity-numbers/" target="_blank" rel="noreferrer">https://www.kaporcenter.org/press-release-posts/kapor-center-for-social-impact-responds-to-twitters-diversity-numbers/</a></td>
+        <td class="url"><a href="https://www.kaporcenter.org/press-release-posts/kapor-center-for-social-impact-responds-to-twitters-diversity-numbers/" target="_blank" rel="noreferrer">https://www.kaporcenter.org/press-release-posts/kapor-center-for-social-impact-responds-to-twitters-diversity-numbers/</a></td>
+        <td class="number status status-4xx" data-value="404">404</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="177">177</td>
+        <td>Chapter 8: Influence at Scale</td>
+        <td>Papers, RFCs, and reference documents</td>
+        <td class="title">Hiring</td>
+        <td class="number" data-value="20">20</td>
+        <td class="url"><a href="https://projectinclude.org/hiring" target="_blank" rel="noreferrer">https://projectinclude.org/hiring</a></td>
+        <td class="url"><a href="https://projectinclude.org/hiring" target="_blank" rel="noreferrer">https://projectinclude.org/hiring</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="178">178</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">How I Think About Career Development</td>
+        <td class="number" data-value="1">1</td>
+        <td class="url"><a href="https://emauton.org/2021/07/24/how-i-think-about-career-development/" target="_blank" rel="noreferrer">https://emauton.org/2021/07/24/how-i-think-about-career-development/</a></td>
+        <td class="url"><a href="https://emauton.org/2021/07/24/how-i-think-about-career-development/" target="_blank" rel="noreferrer">https://emauton.org/2021/07/24/how-i-think-about-career-development/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="179">179</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Engineering Management: The Pendulum or the Ladder</td>
+        <td class="number" data-value="2">2</td>
+        <td class="url"><a href="https://charity.wtf/2019/01/04/engineering-management-the-pendulum-or-the-ladder/" target="_blank" rel="noreferrer">https://charity.wtf/2019/01/04/engineering-management-the-pendulum-or-the-ladder/</a></td>
+        <td class="url"><a href="https://charity.wtf/p/engineering-management-the-pendulum-or-the-ladder" target="_blank" rel="noreferrer">https://charity.wtf/p/engineering-management-the-pendulum-or-the-ladder</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="180">180</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Videos, talks, and slide decks</td>
+        <td class="title">Engineering Leadership With a Little Help From My Friends</td>
+        <td class="number" data-value="3">3</td>
+        <td class="url"><a href="https://leaddev.com/leadingeng-new-york/video/engineering-leadership-little-help-my-friends" target="_blank" rel="noreferrer">https://leaddev.com/leadingeng-new-york/video/engineering-leadership-little-help-my-friends</a></td>
+        <td class="url"><a href="https://leaddev.com/career-development/engineering-leadership-little-help-my-friends" target="_blank" rel="noreferrer">https://leaddev.com/career-development/engineering-leadership-little-help-my-friends</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="181">181</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Tools, communities, and websites</td>
+        <td class="title">The Science of People</td>
+        <td class="number" data-value="4">4</td>
+        <td class="url"><a href="https://www.scienceofpeople.com/" target="_blank" rel="noreferrer">https://www.scienceofpeople.com/</a></td>
+        <td class="url"><a href="https://www.scienceofpeople.com/" target="_blank" rel="noreferrer">https://www.scienceofpeople.com/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="182">182</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">How to Network: 18 Easy Networking Tips You Can Use Today</td>
+        <td class="number" data-value="5">5</td>
+        <td class="url"><a href="https://www.scienceofpeople.com/networking/" target="_blank" rel="noreferrer">https://www.scienceofpeople.com/networking/</a></td>
+        <td class="url"><a href="https://www.scienceofpeople.com/networking/" target="_blank" rel="noreferrer">https://www.scienceofpeople.com/networking/</a></td>
+        <td class="number status status-4xx" data-value="403">403</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="183">183</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">5 Signs It’s Time to Quit Your Job</td>
+        <td class="number" data-value="6">6</td>
+        <td class="url"><a href="https://cate.blog/2021/11/29/5-signs-its-time-to-quit-your-job/" target="_blank" rel="noreferrer">https://cate.blog/2021/11/29/5-signs-its-time-to-quit-your-job/</a></td>
+        <td class="url"><a href="https://cate.blog/2021/11/29/5-signs-its-time-to-quit-your-job/" target="_blank" rel="noreferrer">https://cate.blog/2021/11/29/5-signs-its-time-to-quit-your-job/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="184">184</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Being the DRI of Your Career</td>
+        <td class="number" data-value="7">7</td>
+        <td class="url"><a href="https://cate.blog/2021/09/20/being-the-dri-of-your-career/" target="_blank" rel="noreferrer">https://cate.blog/2021/09/20/being-the-dri-of-your-career/</a></td>
+        <td class="url"><a href="https://cate.blog/2021/09/20/being-the-dri-of-your-career/" target="_blank" rel="noreferrer">https://cate.blog/2021/09/20/being-the-dri-of-your-career/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="185">185</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">From Software Engineering ⇒ Product Management (A 3 Month Reflection)</td>
+        <td class="number" data-value="8">8</td>
+        <td class="url"><a href="https://loujaybee.com/software-engineering-to-product-management" target="_blank" rel="noreferrer">https://loujaybee.com/software-engineering-to-product-management</a></td>
+        <td class="url"><a href="https://loujaybee.com/software-engineering-to-product-management" target="_blank" rel="noreferrer">https://loujaybee.com/software-engineering-to-product-management</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="186">186</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">The Engineer/Manager Pendulum</td>
+        <td class="number" data-value="9">9</td>
+        <td class="url"><a href="https://charity.wtf/2017/05/11/the-engineer-manager-pendulum/" target="_blank" rel="noreferrer">https://charity.wtf/2017/05/11/the-engineer-manager-pendulum/</a></td>
+        <td class="url"><a href="https://charity.wtf/p/the-engineer-manager-pendulum" target="_blank" rel="noreferrer">https://charity.wtf/p/the-engineer-manager-pendulum</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="187">187</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Tech Lead Management Roles are a Trap</td>
+        <td class="number" data-value="10">10</td>
+        <td class="url"><a href="https://lethain.com/tech-lead-managers/" target="_blank" rel="noreferrer">https://lethain.com/tech-lead-managers/</a></td>
+        <td class="url"><a href="https://lethain.com/tech-lead-managers/" target="_blank" rel="noreferrer">https://lethain.com/tech-lead-managers/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="188">188</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Choosing Your Next Job</td>
+        <td class="number" data-value="11">11</td>
+        <td class="url"><a href="https://mollyg.substack.com/p/choosing-your-next-job?s=r" target="_blank" rel="noreferrer">https://mollyg.substack.com/p/choosing-your-next-job?s=r</a></td>
+        <td class="url"><a href="https://mollyg.substack.com/p/choosing-your-next-job?s=r" target="_blank" rel="noreferrer">https://mollyg.substack.com/p/choosing-your-next-job?s=r</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="189">189</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Social posts, comics, and other media</td>
+        <td class="title">‘if you’re not happy or burnt out, you have a tendency to pick a “rebound job”’</td>
+        <td class="number" data-value="12">12</td>
+        <td class="url"><a href="https://www.linkedin.com/feed/update/urn:li:activity:6937461415448338432/" target="_blank" rel="noreferrer">https://www.linkedin.com/feed/update/urn:li:activity:6937461415448338432/</a></td>
+        <td class="url"><a href="https://www.linkedin.com/feed/update/urn:li:activity:6937461415448338432/" target="_blank" rel="noreferrer">https://www.linkedin.com/feed/update/urn:li:activity:6937461415448338432/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="190">190</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">6 Things I Learned Interviewing For Staff Positions</td>
+        <td class="number" data-value="13">13</td>
+        <td class="url"><a href="https://amyunger.com/blog/2020/09/16/6-things-i-learned-interviewing.html" target="_blank" rel="noreferrer">https://amyunger.com/blog/2020/09/16/6-things-i-learned-interviewing.html</a></td>
+        <td class="url"><a href="https://amyunger.com/blog/2020/09/16/6-things-i-learned-interviewing.html" target="_blank" rel="noreferrer">https://amyunger.com/blog/2020/09/16/6-things-i-learned-interviewing.html</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="191">191</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Tools, communities, and websites</td>
+        <td class="title">https://levels.fyi</td>
+        <td class="number" data-value="14">14</td>
+        <td class="url"><a href="https://levels.fyi" target="_blank" rel="noreferrer">https://levels.fyi</a></td>
+        <td class="url"><a href="https://www.levels.fyi/" target="_blank" rel="noreferrer">https://www.levels.fyi/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="192">192</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Tools, communities, and websites</td>
+        <td class="title">Focus Retreat Center</td>
+        <td class="number" data-value="15">15</td>
+        <td class="url"><a href="https://focusretreatcenter.com" target="_blank" rel="noreferrer">https://focusretreatcenter.com</a></td>
+        <td class="url"><a href="https://focusretreatcenter.com/" target="_blank" rel="noreferrer">https://focusretreatcenter.com/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="193">193</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Why Success Is Often Elusive at the Highest Echelons</td>
+        <td class="number" data-value="16">16</td>
+        <td class="url"><a href="https://copyconstruct.medium.com/why-success-is-often-elusive-at-the-highest-echelons-3e02e4dd3e7f" target="_blank" rel="noreferrer">https://copyconstruct.medium.com/why-success-is-often-elusive-at-the-highest-echelons-3e02e4dd3e7f</a></td>
+        <td class="url"><a href="https://copyconstruct.medium.com/why-success-is-often-elusive-at-the-highest-echelons-3e02e4dd3e7f" target="_blank" rel="noreferrer">https://copyconstruct.medium.com/why-success-is-often-elusive-at-the-highest-echelons-3e02e4dd3e7f</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="194">194</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Books and book chapters</td>
+        <td class="title">Automating Inequality</td>
+        <td class="number" data-value="17">17</td>
+        <td class="url"><a href="https://virginia-eubanks.com/automating-inequality/" target="_blank" rel="noreferrer">https://virginia-eubanks.com/automating-inequality/</a></td>
+        <td class="url"><a href="https://virginia-eubanks.com/automating-inequality/" target="_blank" rel="noreferrer">https://virginia-eubanks.com/automating-inequality/</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+      <tr>
+        <td class="number" data-value="195">195</td>
+        <td>Chapter 9: What’s Next?</td>
+        <td>Articles and blog posts</td>
+        <td class="title">Iron Ring:</td>
+        <td class="number" data-value="18">18</td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Iron_Ring:" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Iron_Ring:</a></td>
+        <td class="url"><a href="https://en.wikipedia.org/wiki/Iron_Ring" target="_blank" rel="noreferrer">https://en.wikipedia.org/wiki/Iron_Ring</a></td>
+        <td class="number status status-2xx" data-value="200">200</td>
+      </tr>
+        </tbody>
+      </table>
+      <div id="empty" class="empty" hidden>No resources match these filters.</div>
+    </div>
+  </main>
+  <footer>Generated from <code>data/resource-links.json</code> · Source data checked August 2026</footer>
+  <script>
+    const body = document.querySelector("#rows");
+    const rows = [...body.rows];
+    const search = document.querySelector("#search");
+    const chapter = document.querySelector("#chapter");
+    const category = document.querySelector("#category");
+    const status = document.querySelector("#status");
+    const count = document.querySelector("#result-count");
+    const empty = document.querySelector("#empty");
+    let sortColumn = 0;
+    let sortDirection = 1;
+
+    function filterRows() {
+      const needle = search.value.trim().toLocaleLowerCase();
+      let visible = 0;
+      for (const row of rows) {
+        const code = Number(row.cells[7].dataset.value);
+        const redirected = row.cells[5].textContent !== row.cells[6].textContent;
+        const statusMatch = !status.value ||
+          (status.value === "available" && code >= 200 && code < 400) ||
+          (status.value === "unavailable" && (code < 200 || code >= 400)) ||
+          (status.value === "redirected" && redirected);
+        const show = (!needle || row.textContent.toLocaleLowerCase().includes(needle)) &&
+          (!chapter.value || row.cells[1].textContent === chapter.value) &&
+          (!category.value || row.cells[2].textContent === category.value) && statusMatch;
+        row.hidden = !show;
+        if (show) visible++;
+      }
+      count.textContent = visible === rows.length
+        ? "Showing all " + rows.length + " rows"
+        : "Showing " + visible + " of " + rows.length + " rows";
+      empty.hidden = visible !== 0;
+    }
+
+    function sortRows(column) {
+      sortDirection = sortColumn === column ? -sortDirection : 1;
+      sortColumn = column;
+      rows.sort((a, b) => {
+        const aCell = a.cells[column];
+        const bCell = b.cells[column];
+        const aValue = aCell.dataset.value ?? aCell.textContent.trim();
+        const bValue = bCell.dataset.value ?? bCell.textContent.trim();
+        return aValue.localeCompare(bValue, undefined, { numeric:true, sensitivity:"base" }) * sortDirection;
+      });
+      body.append(...rows);
+    }
+
+    [search, chapter, category, status].forEach((control) => control.addEventListener("input", filterRows));
+    document.querySelectorAll("th button").forEach((button) => button.addEventListener("click", () => sortRows(Number(button.dataset.column))));
+  </script>
+</body>
+</html>
